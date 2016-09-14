@@ -1,9 +1,11 @@
 package com.example.ihortovpinets.myaccounts;
 
+import java.io.Serializable;
+
 /**
  * Created by IhorTovpinets on 25.08.2016.
  */
-public class Account {
+public class Account implements Serializable {
     private String name;
     private double deposit;
     private String description;
@@ -26,7 +28,7 @@ public class Account {
         return description;
     }
 
-    public boolean changeDeposit (int ammount){
+    public boolean depositIsChanged (int ammount){
         if (-ammount>this.deposit) return false;
         else {
             this.deposit = this.deposit + ammount;

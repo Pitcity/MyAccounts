@@ -21,8 +21,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Account> accounts = new ArrayList<Account>();
-    ListView accsListView;
+    ArrayList<Account> accounts = new ArrayList<Account>();
+    ArrayList<Deal> deals = new ArrayList<Deal>();
+    ListView accsListView, dealsListView;
     EditText accName, accMoney, accDescr;
 
     @Override
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         accMoney = (EditText) findViewById(R.id.txtMoney);
         accDescr = (EditText) findViewById(R.id.txtDescr);
         accsListView = (ListView) findViewById(R.id.listView);
+
+        dealsListView = (ListView) findViewById(R.id.listView_seeDeals);
 
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
@@ -47,6 +50,16 @@ public class MainActivity extends AppCompatActivity {
         tabSpec.setContent(R.id.tabStoreList);
         tabSpec.setIndicator("Accounts");
         tabHost.addTab(tabSpec);
+
+        tabSpec = tabHost.newTabSpec("AddDeal");
+        tabSpec.setContent(R.id.tabDealler);
+        tabSpec.setIndicator("AddDeal");
+        tabHost.addTab(tabSpec);
+
+
+        deals.add(new Deal(new Account("Ihor",2000,"lalal"),new Account("Ihor2",2000,"lalal")));
+        deals.add(new Deal(new Account("Ihor3",2000,"lalal"),new Account("Ihor23",2000,"lalal")));
+        deals.add(new Deal(new Account("Ihor4",2000,"lalal"),new Account("Ihor24",2000,"lalal")));
 
 
         final Button btnCrAcc = (Button) findViewById(R.id.btnCreateAccount);
@@ -64,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     addAccount(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString());
                     populateList();
+                    populateListofDeals();
                     Toast.makeText(getApplicationContext(), accName.getText().toString() + " has been added to your Accounts", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -87,10 +101,31 @@ public class MainActivity extends AppCompatActivity {
 
         accName.addTextChangedListener(textWatcher);
         accMoney.addTextChangedListener(textWatcher);
+
+
+
+        Button btnAddDeal = (Button) findViewById(R.id.btnAddDeal); //adding new Deal (doesnt work yet)
+        btnAddDeal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Deals_for_acc.class);
+                intent.putExtra("Accounts", accounts);
+
+                startActivity(intent);
+            }
+
+        });
+
+
     }
     private void populateList () {
         ArrayAdapter<Account> adapter = new AccountsListAdapter();
         accsListView.setAdapter(adapter);
+    }
+
+    private void populateListofDeals () {
+        ArrayAdapter<Deal> adapter = new DealsListAdapter();
+        dealsListView.setAdapter(adapter);
     }
 
     private void addAccount(String name, double money, String descr) {
@@ -109,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
             Account currentAccount = accounts.get(position);
 
-            TextView name = (TextView) view.findViewById(R.id.listView_name);
+            final TextView name = (TextView) view.findViewById(R.id.listView_name);
             TextView money = (TextView) view.findViewById(R.id.listView_money);
             TextView descr = (TextView) view.findViewById(R.id.listView_descr);
             name.setText(currentAccount.getName());
@@ -120,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent intent = new Intent(MainActivity.this, Deals_for_acc.class);
+                            intent.putExtra("Name", name.getText().toString());
+                            intent.putExtra("Deals", deals);
                             startActivity(intent);
                         }
                     }
@@ -128,4 +165,41 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
+    class DealsListAdapter extends ArrayAdapter<Deal> {
+        public DealsListAdapter() {super(MainActivity.this, R.layout.listview_deals, deals);
+        }
+
+        @Override
+        public View getView(int position, View view, ViewGroup parent) {
+            if (view ==null)
+                view = getLayoutInflater().inflate(R.layout.listview_deals,parent,false);
+
+            Deal currentDeal = deals.get(position);
+
+            TextView date = (TextView) view.findViewById(R.id.viewDeals_Date);
+            TextView sum = (TextView) view.findViewById(R.id.viewDeals_sum);
+            TextView seller = (TextView) view.findViewById(R.id.viewDeals_seller);
+            TextView buyer = (TextView) view.findViewById(R.id.viewDeals_buyer);
+
+            date.setText(currentDeal.getDate());
+            sum.setText(Double.toString(currentDeal.getSum()));
+            seller.setText(currentDeal.getSeller().getName());
+            buyer.setText(currentDeal.getBuyer().getName());
+            /*view.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(MainActivity.this, Deals_for_acc.class);
+                            intent.putExtra("Name", name.getText().toString());
+                            startActivity(intent);
+                        }
+                    }
+            );*/
+            return view;
+        }
+
+    }
+
 }

@@ -33,6 +33,19 @@
                 android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/tabDealler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical" >
+
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/listView_seeDeals"
+                        android:layout_gravity="center_horizontal" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/tabCreator"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -101,5 +114,14 @@
 
         </LinearLayout>
     </TabHost>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ Deal"
+        android:id="@+id/btnAddDeal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
