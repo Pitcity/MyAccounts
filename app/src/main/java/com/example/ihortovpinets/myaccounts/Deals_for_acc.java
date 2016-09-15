@@ -1,5 +1,6 @@
 package com.example.ihortovpinets.myaccounts;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -38,7 +39,15 @@ public class Deals_for_acc extends AppCompatActivity {
             TextView buyer = (TextView) view.findViewById(R.id.viewDeals_buyer);
 
             date.setText(currentDeal.getDate());
-            sum.setText(Double.toString(currentDeal.getSum()));
+            if (currentDeal.getSeller().getName().equals(name)) {
+                sum.setTextColor(Color.GREEN);
+                sum.setText("+"+Double.toString(currentDeal.getSum()));
+            }
+            else {
+                sum.setTextColor(Color.RED);
+                sum.setText("-"+Double.toString(currentDeal.getSum()));
+            }
+
             seller.setText(currentDeal.getSeller().getName());
             buyer.setText(currentDeal.getBuyer().getName());
             /*view.setOnClickListener(
@@ -63,7 +72,6 @@ public class Deals_for_acc extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deals_for_acc);
-
 
         dealsListView = (ListView) findViewById(R.id.listForDeals);
 

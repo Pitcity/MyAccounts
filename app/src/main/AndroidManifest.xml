@@ -18,6 +18,9 @@
         <activity android:name=".Deals_for_acc">
             <!--android:label="@string/about_title">-->
         </activity>
+        <activity android:name=".CreateDealActivity">
+            <!--android:label="@string/about_title">-->
+        </activity>
     </application>
 
 </manifest>

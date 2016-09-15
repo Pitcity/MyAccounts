@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(tabSpec);
 
 
-        deals.add(new Deal(new Account("Ihor",2000,"lalal"),new Account("Ihor2",2000,"lalal")));
-        deals.add(new Deal(new Account("Ihor3",2000,"lalal"),new Account("Ihor23",2000,"lalal")));
-        deals.add(new Deal(new Account("Ihor4",2000,"lalal"),new Account("Ihor24",2000,"lalal")));
+        deals.add(new Deal(new Account("Ihor",2000,"lalal"),new Account("Ihor2",2000,"lalal"),new String("deal1")));
+        deals.add(new Deal(new Account("Ihor3",2000,"lalal"),new Account("Ihor23",2000,"lalal"),new String("deal1")));
+        deals.add(new Deal(new Account("Ihor4",2000,"lalal"),new Account("Ihor24",2000,"lalal"),new String("deal1")));
 
 
         final Button btnCrAcc = (Button) findViewById(R.id.btnCreateAccount);
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         btnAddDeal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Deals_for_acc.class);
+                Intent intent = new Intent(MainActivity.this, CreateDealActivity.class);
                 intent.putExtra("Accounts", accounts);
 
                 startActivity(intent);

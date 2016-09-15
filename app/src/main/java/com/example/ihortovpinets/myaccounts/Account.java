@@ -5,10 +5,11 @@ import java.io.Serializable;
 /**
  * Created by IhorTovpinets on 25.08.2016.
  */
-public class Account implements Serializable {
+public class Account implements Serializable { //make inh and 2 types of acc, inner and outer, now just a flag
     private String name;
     private double deposit;
     private String description;
+    private int flag; //0 - inner ; 1 - outer
 
     public Account(String name, double deposit, String description) {
         this.name = name;
@@ -29,11 +30,13 @@ public class Account implements Serializable {
     }
 
     public boolean depositIsChanged (int ammount){
-        if (-ammount>this.deposit) return false;
-        else {
-            this.deposit = this.deposit + ammount;
-            return true;
+        if (flag == 0) {
+            if (-ammount > this.deposit) return false;
+            else {
+                this.deposit = this.deposit + ammount;
+                return true;
+            }
         }
-
+        else return true;
     }
 }

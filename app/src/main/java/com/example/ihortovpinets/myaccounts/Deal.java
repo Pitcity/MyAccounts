@@ -17,25 +17,38 @@ public class Deal implements Serializable {
     private int ammount[];
     private double sum=0;
     private String date;
+    private String note;
 
-    public Deal(Account buyer, Account seller, String[] products, double[] price, int[] ammount) {
+    public Deal(Account buyer, Account seller, String[] products, double[] price, int[] ammount, String note, String date) {
         this.buyer = buyer;
         this.seller = seller;
         this.products = products;
         this.price = price;
         this.ammount = ammount;
         this.sum = countSumDeal(price,ammount);
+        this.note = note;
+        this.date = date;
+    }
+
+    public Deal(Account buyer, Account seller, String[] products, double[] price, int[] ammount, String note) {
+        this.buyer = buyer;
+        this.seller = seller;
+        this.products = products;
+        this.price = price;
+        this.ammount = ammount;
+        this.sum = countSumDeal(price,ammount);
+        this.note = note;
 
        // Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         date = df.format(Calendar.getInstance().getTime());
     }
 
-    public Deal(Account buyer, Account seller) {
+    public Deal(Account buyer, Account seller, String note) {
         this.buyer = buyer;
         this.seller = seller;
         this.sum = 0;
-        // Calendar c = Calendar.getInstance();
+        this.note = note;
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         date = df.format(Calendar.getInstance().getTime());
     }
@@ -72,5 +85,9 @@ public class Deal implements Serializable {
 
     public double getSum() {
         return sum;
+    }
+
+    public String getNote() {
+        return note;
     }
 }
