@@ -37,6 +37,7 @@ public class Deals_for_acc extends AppCompatActivity {
             TextView sum = (TextView) view.findViewById(R.id.viewDeals_sum);
             TextView seller = (TextView) view.findViewById(R.id.viewDeals_seller);
             TextView buyer = (TextView) view.findViewById(R.id.viewDeals_buyer);
+            TextView descr = (TextView) view.findViewById(R.id.viewDeals_descr);
 
             date.setText(currentDeal.getDate());
             if (currentDeal.getSeller().getName().equals(name)) {
@@ -50,6 +51,7 @@ public class Deals_for_acc extends AppCompatActivity {
 
             seller.setText(currentDeal.getSeller().getName());
             buyer.setText(currentDeal.getBuyer().getName());
+            descr.setText(currentDeal.getNote());
             /*view.setOnClickListener(
                     new View.OnClickListener() {
                         @Override

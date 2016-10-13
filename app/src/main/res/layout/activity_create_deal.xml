@@ -7,13 +7,15 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="number"
         android:ems="10"
         android:id="@+id/dealSum"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        />
+        android:inputType="numberDecimal"
+        android:hint="Sum"
+        android:layout_alignLeft="@+id/dealAdding_btn"
+        android:layout_alignStart="@+id/dealAdding_btn" />
 
     <Spinner
         android:layout_width="wrap_content"
@@ -34,7 +36,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/dealAdditionalBuyer"
+        android:id="@+id/dealAdditionBuyer"
         android:layout_below="@+id/dealBuyer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -43,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dealAdditionSeller"
-        android:layout_alignTop="@+id/dealAdditionalBuyer"
+        android:layout_alignTop="@+id/dealAdditionBuyer"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -52,7 +54,7 @@
         android:layout_height="wrap_content"
 
         android:id="@+id/datePicker"
-        android:layout_below="@+id/dealAdditionalBuyer"
+        android:layout_below="@+id/dealAdditionBuyer"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
     <Button
@@ -64,5 +66,15 @@
         android:layout_below="@+id/datePicker"
         android:layout_toLeftOf="@+id/dealAdditionSeller"
         android:layout_toStartOf="@+id/dealAdditionSeller" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/dealDescr"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/dealSum"
+        android:hint="Some description" />
 
 </RelativeLayout>

@@ -9,11 +9,27 @@ public class Account implements Serializable { //make inh and 2 types of acc, in
     private String name;
     private double deposit;
     private String description;
-    private int flag; //0 - inner ; 1 - outer
+    public int flag; //0 - inner ; 1 - outer
 
-    public Account(String name, double deposit, String description) {
+    private Account(String name)
+    {
+        this.name = name;
+        this.deposit = 0;
+        flag =0;
+        this.description = "";
+    }
+
+    public Account(String name, int flag)
+    {
+        this.name = name;
+        this.deposit = 0;
+        this.flag = flag;
+        this.description = "";
+    }
+    public Account(String name, double deposit, String description, int flag) {
         this.name = name;
         this.deposit = deposit;
+        this.flag=flag;
         this.description = description;
     } //add to DB
 
@@ -29,8 +45,8 @@ public class Account implements Serializable { //make inh and 2 types of acc, in
         return description;
     }
 
-    public boolean depositIsChanged (int ammount){
-        if (flag == 0) {
+    public boolean depositIsChanged (double ammount){
+        if (this.flag == 0) {
             if (-ammount > this.deposit) return false;
             else {
                 this.deposit = this.deposit + ammount;

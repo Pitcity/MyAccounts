@@ -7,7 +7,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,17 +16,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Account> accounts = new ArrayList<Account>();
+    ArrayList<Account> myAccounts = new ArrayList<Account>();
+    //ArrayList<Account> allAccounts = new ArrayList<Account>();
     ArrayList<Deal> deals = new ArrayList<Deal>();
     ListView accsListView, dealsListView;
     EditText accName, accMoney, accDescr;
 
-    @Override
+    public void addDeal(Deal d) {
+        if (d!=null) deals.add(d);
+    }
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -56,26 +58,20 @@ public class MainActivity extends AppCompatActivity {
         tabSpec.setIndicator("AddDeal");
         tabHost.addTab(tabSpec);
 
-
-        deals.add(new Deal(new Account("Ihor",2000,"lalal"),new Account("Ihor2",2000,"lalal"),new String("deal1")));
-        deals.add(new Deal(new Account("Ihor3",2000,"lalal"),new Account("Ihor23",2000,"lalal"),new String("deal1")));
-        deals.add(new Deal(new Account("Ihor4",2000,"lalal"),new Account("Ihor24",2000,"lalal"),new String("deal1")));
-
-
         final Button btnCrAcc = (Button) findViewById(R.id.btnCreateAccount);
         btnCrAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 boolean isExist = false;
-                for (Account o : accounts) {
+                for (Account o : myAccounts) {
                     if (o!=null && o.getName().equals(accName.getText().toString())) isExist=true;
                 }
                 if (isExist) {
                     Toast.makeText(getApplicationContext(),"Account with this name already exists", Toast.LENGTH_LONG).show();
                 }
                 else {
-                    addAccount(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString());
+                    addAccount(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString(),0);
                     populateList();
                     populateListofDeals();
                     Toast.makeText(getApplicationContext(), accName.getText().toString() + " has been added to your Accounts", Toast.LENGTH_SHORT).show();
@@ -102,22 +98,58 @@ public class MainActivity extends AppCompatActivity {
         accName.addTextChangedListener(textWatcher);
         accMoney.addTextChangedListener(textWatcher);
 
-
-
         Button btnAddDeal = (Button) findViewById(R.id.btnAddDeal); //adding new Deal (doesnt work yet)
         btnAddDeal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CreateDealActivity.class);
-                intent.putExtra("Accounts", accounts);
-
-                startActivity(intent);
+                intent.putExtra("Accounts", myAccounts);// скопіювалось:? походу так
+                startActivityForResult(intent, 221);
             }
-
         });
 
-
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==221&&data!=null)
+        {
+            Account buyer = null, seller = null;
+            Deal deal1 = null;
+            if (data.getSerializableExtra("NewDeal")!=null)
+                deal1 =(Deal)data.getSerializableExtra("NewDeal");
+            try {
+                for (Account a : myAccounts) {
+                    if (a.getName().equals(deal1.getBuyer().getName())) {
+                        buyer = a;
+                    }
+                    if (a.getName().equals(deal1.getSeller().getName())) {
+                        seller = a;
+                    }
+                    if (buyer == null) {
+                        buyer = new Account(deal1.getBuyer().getName(),1);
+                    }
+                    if (seller==null)
+                        seller = new Account(deal1.getSeller().getName(),1);
+                }
+                Deal newDeal1 = Deal.createDeal(buyer, seller, deal1.getNote(), deal1.getSum(), deal1.getDate());
+                if (newDeal1 == null) {
+                    Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                addDeal(newDeal1);
+            } catch (NullPointerException np) {
+                Toast.makeText(getApplicationContext(), "Something went wrong while creating new deal", Toast.LENGTH_LONG).show();
+                return;
+            }
+            populateList();
+            populateListofDeals();
+
+        }
+    }
+
     private void populateList () {
         ArrayAdapter<Account> adapter = new AccountsListAdapter();
         accsListView.setAdapter(adapter);
@@ -128,13 +160,15 @@ public class MainActivity extends AppCompatActivity {
         dealsListView.setAdapter(adapter);
     }
 
-    private void addAccount(String name, double money, String descr) {
-        accounts.add(new Account(name,money,descr));
+    private void addAccount(String name, double money, String descr,int flag) {
+        //if(flag==1)
+            //allAccounts.add(new Account(name,money,descr,flag));
+        myAccounts.add(new Account(name,money,descr,flag));
     }
 
     private class AccountsListAdapter extends ArrayAdapter<Account> {
         public AccountsListAdapter() {
-            super(MainActivity.this, R.layout.listview_item, accounts);
+            super(MainActivity.this, R.layout.listview_item, myAccounts);
         }
 
         @Override
@@ -142,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             if (view ==null)
                 view = getLayoutInflater().inflate(R.layout.listview_item,parent,false);
 
-            Account currentAccount = accounts.get(position);
+            Account currentAccount = myAccounts.get(position);
 
             final TextView name = (TextView) view.findViewById(R.id.listView_name);
             TextView money = (TextView) view.findViewById(R.id.listView_money);
@@ -163,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
             );
             return view;
         }
-
     }
 
 
@@ -182,11 +215,13 @@ public class MainActivity extends AppCompatActivity {
             TextView sum = (TextView) view.findViewById(R.id.viewDeals_sum);
             TextView seller = (TextView) view.findViewById(R.id.viewDeals_seller);
             TextView buyer = (TextView) view.findViewById(R.id.viewDeals_buyer);
+            TextView descr = (TextView) view.findViewById(R.id.viewDeals_descr);
 
             date.setText(currentDeal.getDate());
             sum.setText(Double.toString(currentDeal.getSum()));
             seller.setText(currentDeal.getSeller().getName());
             buyer.setText(currentDeal.getBuyer().getName());
+            descr.setText(currentDeal.getNote());
             /*view.setOnClickListener(
                     new View.OnClickListener() {
                         @Override

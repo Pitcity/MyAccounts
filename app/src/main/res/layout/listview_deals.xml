@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
+        android:text="Medium Text"
         android:id="@+id/viewDeals_Date"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -29,13 +29,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
+        android:text="Mediu"
         android:id="@+id/viewDeals_buyer"
-        android:layout_alignTop="@+id/viewDeals_seller"
-        android:layout_alignLeft="@+id/viewDeals_Date"
-        android:layout_alignStart="@+id/viewDeals_Date"
-        android:layout_marginLeft="42dp"
-        android:layout_marginStart="42dp" />
+        android:layout_below="@+id/viewDeals_descr"
+        android:layout_toRightOf="@+id/textView2"
+        android:layout_toEndOf="@+id/textView2" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,9 +42,37 @@
         android:text="Medium Text"
         android:id="@+id/viewDeals_seller"
         android:layout_below="@+id/viewDeals_sum"
-        android:layout_toRightOf="@+id/viewDeals_buyer"
-        android:layout_toEndOf="@+id/viewDeals_buyer"
-        android:layout_marginLeft="44dp"
-        android:layout_marginStart="44dp" />
+        android:layout_alignRight="@+id/viewDeals_sum"
+        android:layout_alignEnd="@+id/viewDeals_sum" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/viewDeals_descr"
+        android:layout_above="@+id/viewDeals_seller"
+        android:layout_alignLeft="@+id/viewDeals_Date"
+        android:layout_alignStart="@+id/viewDeals_Date" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="B:  "
+        android:id="@+id/textView2"
+        android:layout_below="@+id/viewDeals_descr"
+        android:layout_alignLeft="@+id/viewDeals_descr"
+        android:layout_alignStart="@+id/viewDeals_descr" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="S:  "
+        android:id="@+id/textView3"
+        android:layout_alignTop="@+id/viewDeals_seller"
+        android:layout_toLeftOf="@+id/viewDeals_seller"
+        android:layout_toStartOf="@+id/viewDeals_seller" />
 
 </RelativeLayout>

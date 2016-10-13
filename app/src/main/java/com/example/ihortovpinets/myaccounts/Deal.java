@@ -4,6 +4,7 @@ package com.example.ihortovpinets.myaccounts;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by IhorTovpinets on 25.08.2016.
@@ -19,7 +20,7 @@ public class Deal implements Serializable {
     private String date;
     private String note;
 
-    public Deal(Account buyer, Account seller, String[] products, double[] price, int[] ammount, String note, String date) {
+    private Deal(Account buyer, Account seller, String[] products, double[] price, int[] ammount, String note, String date) {
         this.buyer = buyer;
         this.seller = seller;
         this.products = products;
@@ -30,7 +31,7 @@ public class Deal implements Serializable {
         this.date = date;
     }
 
-    public Deal(Account buyer, Account seller, String[] products, double[] price, int[] ammount, String note) {
+    private Deal(Account buyer, Account seller, String[] products, double[] price, int[] ammount, String note) {
         this.buyer = buyer;
         this.seller = seller;
         this.products = products;
@@ -44,13 +45,26 @@ public class Deal implements Serializable {
         date = df.format(Calendar.getInstance().getTime());
     }
 
-    public Deal(Account buyer, Account seller, String note) {
+    private Deal(Account buyer, Account seller, String note) {
         this.buyer = buyer;
         this.seller = seller;
         this.sum = 0;
         this.note = note;
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
         date = df.format(Calendar.getInstance().getTime());
+    }
+
+    private Deal(Account buyer, Account seller, String note, double sum, String date)  {
+        this.buyer = buyer;
+        this.seller = seller;
+        this.sum = sum;
+        this.note = note;
+        this.date = date;
+    }
+
+    public static Deal createDeal(Account buyer, Account seller, String note, double sum, String date) {
+        if (buyer.depositIsChanged(-sum)&&seller.depositIsChanged(sum)) return new Deal(buyer, seller, note, sum, date);
+        return null;
     }
 
     private double countSumDeal(double[] price, int[] ammount) {
