@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -25,6 +26,21 @@ public class CreateDealActivity extends AppCompatActivity{
     Spinner spinnerSeller, spinnerBuyer;
     Button dealAdding_btm;
     EditText additionSeller, additionBuyer, dealSum,dealDescr;
+
+    private Account getAccFromSpin(Spinner sp, EditText et) throws IOException {
+        Account acc = null;
+        if (sp.getSelectedItem().equals("Another"))
+            if (et.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(), "Enter name of seller under \"Another\"", Toast.LENGTH_LONG).show();
+                throw new IOException();
+            } else
+                acc = new Account(et.getText().toString(), true);
+        else
+            for (Account a : accounts)
+                if (a.getName().equals(sp.getSelectedItem().toString()))
+                    acc = a;
+        return acc;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,72 +59,42 @@ public class CreateDealActivity extends AppCompatActivity{
         dealAdding_btm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Account buyer=null;
-                Account seller=null;
-
-                if (spinnerBuyer.getSelectedItem().toString().equals(spinnerSeller.getSelectedItem().toString())) {
+                Account buyer;
+                Account seller;
+                if (spinnerBuyer.getSelectedItem().toString().equals(spinnerSeller.getSelectedItem().toString()))
                     Toast.makeText(getApplicationContext(),"One acc cant be as buyer and seller in ne deal, change it pls", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if(spinnerSeller.getSelectedItem().equals("Another")) {
-                    if (additionSeller.getText().toString().equals("")) {
-                        Toast.makeText(getApplicationContext(),"Enter name of seller under \"Another\"", Toast.LENGTH_LONG).show();
-                        return;
-                    } else
-                         seller = new Account(additionSeller.getText().toString(),1);
-                } else {
-                    for (Account a: accounts) {
-                        if(a.getName().equals(spinnerSeller.getSelectedItem().toString())) {
-                            seller = a;
-                        }
-                    }
-                }
-                if(spinnerBuyer.getSelectedItem().equals("Another")) {
-                    if (additionBuyer.getText().toString().equals("")) {
-                        Toast.makeText(getApplicationContext(),"Enter name of buyer under \"Another\"", Toast.LENGTH_LONG).show();
+                else {
+                    try {
+                        seller = getAccFromSpin(spinnerSeller, additionSeller);
+                        buyer = getAccFromSpin(spinnerBuyer, additionBuyer);
+                    } catch (Exception e) {
                         return;
                     }
-                    else
-                        buyer = new Account(additionBuyer.getText().toString(),1);
-                } else {
-                    for (Account a: accounts) {
-                        if(a.getName().equals(spinnerBuyer.getSelectedItem().toString())) {
-                            buyer = a;
-                        }
-                    }
-                }
-                double sum =0;
-                String note="";
-                try {
-                    sum = Double.valueOf(dealSum.getText().toString());
-                    note = dealDescr.getText().toString();
-                } catch (Exception e) {
-                        Toast.makeText(getApplicationContext(),"Enter correct value as ammount of the deal", Toast.LENGTH_LONG).show();
+
+                    double sum;
+                    String note;
+                    try {
+                        sum = Double.valueOf(dealSum.getText().toString());
+                        note = dealDescr.getText().toString();
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "Enter correct value as ammount of the deal", Toast.LENGTH_LONG).show();
                         return;
+                    }
+                    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                    String date = df.format(mDatePicker.getCalendarView().getDate());
+
+                    Deal newDeal = Deal.createDeal(buyer, seller, note, sum, date);
+                    if (newDeal == null) {
+                        Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("NewDeal", newDeal);
+                    setResult(221, resultIntent);
+                    finish();
                 }
-                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-                String date = df.format(mDatePicker.getCalendarView().getDate());
-
-                Deal newDeal = Deal.createDeal(buyer,seller,note,sum, date);
-                if (newDeal==null) {
-                    Toast.makeText(getApplicationContext(),"Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                Intent resultIntent = new Intent();
-
-                resultIntent.putExtra("NewDeal",newDeal);
-
-                /*resultIntent.putExtra("buyer",buyer.getName());
-                resultIntent.putExtra("seller",seller.getName());
-                resultIntent.putExtra("note",note);
-                resultIntent.putExtra("sum",sum);
-                resultIntent.putExtra("date",date);
-*/
-                setResult(221, resultIntent);
-                finish();
             }
         });
-
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -120,8 +106,6 @@ public class CreateDealActivity extends AppCompatActivity{
             spinnerAdapter.add(a.getName());
         }
         spinnerAdapter.add("Another");
-       // mDatePicker.ye
-
 
     }
 }

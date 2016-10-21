@@ -82,11 +82,9 @@ public class Deals_for_acc extends AppCompatActivity {
         txtName.setText(name);
         ArrayList<Deal> deals =  (ArrayList<Deal>)getIntent().getSerializableExtra("Deals");
 
-        for (Deal d: deals) {
-            if(d.getBuyer().getName().equals(name)||d.getSeller().getName().equals(name)) {
+        for (Deal d: deals)
+            if(d.getBuyer().getName().equals(name)||d.getSeller().getName().equals(name))
                 filteredDeals.add(d);
-            }
-        }
 
         populateListofDeals();
     }

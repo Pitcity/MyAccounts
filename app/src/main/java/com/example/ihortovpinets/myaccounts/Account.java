@@ -5,33 +5,26 @@ import java.io.Serializable;
 /**
  * Created by IhorTovpinets on 25.08.2016.
  */
-public class Account implements Serializable { //make inh and 2 types of acc, inner and outer, now just a flag
+
+public class Account implements Serializable {
     private String name;
     private double deposit;
     private String description;
-    public int flag; //0 - inner ; 1 - outer
+    public boolean isOuter;
 
-    private Account(String name)
-    {
+    public Account(String name, boolean flag) {
         this.name = name;
         this.deposit = 0;
-        flag =0;
+        this.isOuter = flag;
         this.description = "";
     }
 
-    public Account(String name, int flag)
-    {
-        this.name = name;
-        this.deposit = 0;
-        this.flag = flag;
-        this.description = "";
-    }
-    public Account(String name, double deposit, String description, int flag) {
+    public Account(String name, double deposit, String description, boolean flag) {
         this.name = name;
         this.deposit = deposit;
-        this.flag=flag;
+        this.isOuter=flag;
         this.description = description;
-    } //add to DB
+    }
 
     public String getName() {
         return name;
@@ -46,13 +39,18 @@ public class Account implements Serializable { //make inh and 2 types of acc, in
     }
 
     public boolean depositIsChanged (double ammount){
-        if (this.flag == 0) {
-            if (-ammount > this.deposit) return false;
+        if (!isOuter)
+            if (-ammount > this.deposit)
+                return false;
             else {
                 this.deposit = this.deposit + ammount;
                 return true;
             }
-        }
         else return true;
+    }
+
+    public boolean equals(Object o) {
+        Account account = (Account) o;
+        return this.getName().equals(account.getName());
     }
 }

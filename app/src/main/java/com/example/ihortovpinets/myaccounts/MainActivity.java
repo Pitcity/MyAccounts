@@ -64,14 +64,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 boolean isExist = false;
-                for (Account o : myAccounts) {
-                    if (o!=null && o.getName().equals(accName.getText().toString())) isExist=true;
-                }
-                if (isExist) {
+                for (Account o : myAccounts)
+                    if (o!=null && o.getName().equals(accName.getText().toString()))
+                        isExist=true;
+                if (isExist)
                     Toast.makeText(getApplicationContext(),"Account with this name already exists", Toast.LENGTH_LONG).show();
-                }
                 else {
-                    addAccount(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString(),0);
+                    addAccount(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString(),false);
                     populateList();
                     populateListofDeals();
                     Toast.makeText(getApplicationContext(), accName.getText().toString() + " has been added to your Accounts", Toast.LENGTH_SHORT).show();
@@ -98,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         accName.addTextChangedListener(textWatcher);
         accMoney.addTextChangedListener(textWatcher);
 
-        Button btnAddDeal = (Button) findViewById(R.id.btnAddDeal); //adding new Deal (doesnt work yet)
+        Button btnAddDeal = (Button) findViewById(R.id.btnAddDeal);
         btnAddDeal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,28 +113,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==221&&data!=null)
-        {
+        if(requestCode==221&&data!=null) {
             Account buyer = null, seller = null;
             Deal deal1 = null;
             if (data.getSerializableExtra("NewDeal")!=null)
                 deal1 =(Deal)data.getSerializableExtra("NewDeal");
             try {
+                if(!myAccounts.contains(deal1.getBuyer()))
+                    buyer = new Account(deal1.getBuyer().getName(),true);
+                if(!myAccounts.contains(deal1.getSeller()))
+                    seller = new Account(deal1.getSeller().getName(),true);
                 for (Account a : myAccounts) {
-                    if (a.getName().equals(deal1.getBuyer().getName())) {
+                    if (a.getName().equals(deal1.getBuyer().getName()))
                         buyer = a;
-                    }
-                    if (a.getName().equals(deal1.getSeller().getName())) {
+                    if (a.getName().equals(deal1.getSeller().getName()))
                         seller = a;
-                    }
-                    if (buyer == null) {
-                        buyer = new Account(deal1.getBuyer().getName(),1);
-                    }
-                    if (seller==null)
-                        seller = new Account(deal1.getSeller().getName(),1);
                 }
                 Deal newDeal1 = Deal.createDeal(buyer, seller, deal1.getNote(), deal1.getSum(), deal1.getDate());
-                if (newDeal1 == null) {
+                if (newDeal1 == null) { //if deal wasn't created, then returned null
                     Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -146,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
             }
             populateList();
             populateListofDeals();
-
         }
     }
 
@@ -160,9 +154,7 @@ public class MainActivity extends AppCompatActivity {
         dealsListView.setAdapter(adapter);
     }
 
-    private void addAccount(String name, double money, String descr,int flag) {
-        //if(flag==1)
-            //allAccounts.add(new Account(name,money,descr,flag));
+    private void addAccount(String name, double money, String descr,boolean flag) {
         myAccounts.add(new Account(name,money,descr,flag));
     }
 
