@@ -1,6 +1,8 @@
 package com.example.ihortovpinets.myaccounts;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
         dealsListView = (ListView) findViewById(R.id.listView_seeDeals);
 
+        final DBHelper dbh = new DBHelper(getApplicationContext());
+
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
 
@@ -71,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Account with this name already exists", Toast.LENGTH_LONG).show();
                 else {
                     addAccount(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString(),false);
+                    try {
+                        dbh.addAccountToDB(new Account(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString(), false));
+                    } catch (Exception e) {}
                     populateList();
                     populateListofDeals();
                     Toast.makeText(getApplicationContext(), accName.getText().toString() + " has been added to your Accounts", Toast.LENGTH_SHORT).show();
@@ -106,7 +113,32 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 221);
             }
         });
+        myAccounts = dbh.getAccListFromDB();
+        /*SQLiteDatabase mydatabase = openOrCreateDatabase("MyAccounts",MODE_PRIVATE,null);
+        //mydatabase.execSQL("DROP TABLE Accounts;");
 
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Accounts(AccName VARCHAR PRIMARY KEY, " +
+                "    deposit DOUBLE, " +
+                "    description VARCHAR," +
+                "    isOuter BOOLEAN);");
+        try {
+            mydatabase.execSQL("INSERT INTO Accounts VALUES('The first acc',2000,'lalala','false');");
+            mydatabase.execSQL("INSERT INTO Accounts VALUES('The second acc',70900,'lalala','false');");
+            mydatabase.execSQL("INSERT INTO Accounts VALUES('The third acc',5000,'lalala','true');");
+        } catch (Exception e) {
+            System.out.println("tratata db exception");
+        }
+
+        Cursor resultSet = mydatabase.rawQuery("Select * from Accounts",null);
+        resultSet.moveToFirst();
+        myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.getBoolean(resultSet.getString(3))));
+        do {
+            resultSet.moveToNext();
+            myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.getBoolean(resultSet.getString(3))));
+        } while (!resultSet.isLast());
+*/
+        populateList();
+        populateListofDeals();
     }
 
     @Override
