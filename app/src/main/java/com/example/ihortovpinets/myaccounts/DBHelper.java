@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    final static int DB_VER = 3;
+    final static int DB_VER = 4;
     final static String DB_NAME = "MyAccounts1.db";
     final String TABLE_NAME1 = "Accounts";
     final String TABLE_NAME2 = "Deals";
@@ -78,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper {
         resultSet.moveToFirst();
         ArrayList<Deal> myDeals = new ArrayList<>();
         myDeals.add(Deal.createDeal(new Account(resultSet.getString(0),true), new Account(resultSet.getString(1),true), resultSet.getString(2), Double.valueOf(resultSet.getString(3)),resultSet.getString(4)));
-        do {
+        if(!resultSet.isLast()) do {
             resultSet.moveToNext();
             myDeals.add(Deal.createDeal(new Account(resultSet.getString(0),true), new Account(resultSet.getString(1),true), resultSet.getString(2), Double.valueOf(resultSet.getString(3)),resultSet.getString(4)));
         } while (!resultSet.isLast());
@@ -87,9 +87,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void fillDb(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('The first acc',2000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('The second acc',7000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('The third acc',5000,'lalala','true');");
+        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('FirstAcc',2000,'lalala','false');");
+        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('SecondAcc',7000,'lalala','false');");
+        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('ThirdAcc',5000,'lalala','false');");
+
+
+        sqLiteDatabase.execSQL("INSERT INTO Deals VALUES('FirstAcc','SecondAcc','commentFor first deal',1000,'19-вер-2016');");
+
     }
 
     public void updateAcc(Account acc) {
