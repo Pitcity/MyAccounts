@@ -26,6 +26,7 @@ public class CreateDealActivity extends AppCompatActivity{
     Spinner spinnerSeller, spinnerBuyer;
     Button dealAdding_btm;
     EditText additionSeller, additionBuyer, dealSum,dealDescr;
+    DBHelper dbh;
 
     private Account getAccFromSpin(Spinner sp, EditText et) throws IOException {
         Account acc = null;
@@ -33,8 +34,9 @@ public class CreateDealActivity extends AppCompatActivity{
             if (et.getText().toString().equals("")) {
                 Toast.makeText(getApplicationContext(), "Enter name of seller under \"Another\"", Toast.LENGTH_LONG).show();
                 throw new IOException();
-            } else
+            } else {
                 acc = new Account(et.getText().toString(), true);
+            }
         else
             for (Account a : accounts)
                 if (a.getName().equals(sp.getSelectedItem().toString()))
@@ -56,6 +58,8 @@ public class CreateDealActivity extends AppCompatActivity{
         additionSeller = (EditText) findViewById(R.id.dealAdditionSeller);
         dealSum = (EditText)  findViewById(R.id.dealSum);
         dealDescr = (EditText) findViewById(R.id.dealDescr);
+        dbh = new DBHelper(getApplicationContext());
+
         dealAdding_btm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,6 +92,9 @@ public class CreateDealActivity extends AppCompatActivity{
                         Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
                         return;
                     }
+
+                   // if(!accounts.contains(seller))
+
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("NewDeal", newDeal);
                     setResult(221, resultIntent);

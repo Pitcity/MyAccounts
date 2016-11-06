@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Deal> deals = new ArrayList<Deal>();
     ListView accsListView, dealsListView;
     EditText accName, accMoney, accDescr;
+    DBHelper dbh;
 
     public void addDeal(Deal d) {
         if (d!=null) deals.add(d);
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         dealsListView = (ListView) findViewById(R.id.listView_seeDeals);
 
-        final DBHelper dbh = new DBHelper(getApplicationContext());
+        dbh = new DBHelper(getApplicationContext());
 
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         myAccounts = dbh.getAccListFromDB();
+        deals = dbh.getDealListFromDB();
         /*SQLiteDatabase mydatabase = openOrCreateDatabase("MyAccounts",MODE_PRIVATE,null);
         //mydatabase.execSQL("DROP TABLE Accounts;");
 
@@ -151,10 +153,14 @@ public class MainActivity extends AppCompatActivity {
             if (data.getSerializableExtra("NewDeal")!=null)
                 deal1 =(Deal)data.getSerializableExtra("NewDeal");
             try {
-                if(!myAccounts.contains(deal1.getBuyer()))
-                    buyer = new Account(deal1.getBuyer().getName(),true);
-                if(!myAccounts.contains(deal1.getSeller()))
-                    seller = new Account(deal1.getSeller().getName(),true);
+                if(!myAccounts.contains(deal1.getBuyer())) {
+                    buyer = new Account(deal1.getBuyer().getName(), true);
+                    dbh.addAccountToDB(buyer);
+                }
+                if(!myAccounts.contains(deal1.getSeller())) {
+                    seller = new Account(deal1.getSeller().getName(), true);
+                    dbh.addAccountToDB(seller);
+                }
                 for (Account a : myAccounts) {
                     if (a.getName().equals(deal1.getBuyer().getName()))
                         buyer = a;
@@ -166,7 +172,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
                     return;
                 }
+                dbh.updateAcc(buyer);
+                dbh.updateAcc(seller);
                 addDeal(newDeal1);
+                dbh.addDealToDB(newDeal1);
+                deals = dbh.getDealListFromDB();
             } catch (NullPointerException np) {
                 Toast.makeText(getApplicationContext(), "Something went wrong while creating new deal", Toast.LENGTH_LONG).show();
                 return;
