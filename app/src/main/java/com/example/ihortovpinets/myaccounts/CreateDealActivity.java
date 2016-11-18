@@ -1,6 +1,5 @@
 package com.example.ihortovpinets.myaccounts;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +25,6 @@ public class CreateDealActivity extends AppCompatActivity{
     Spinner spinnerSeller, spinnerBuyer;
     Button dealAdding_btm;
     EditText additionSeller, additionBuyer, dealSum,dealDescr;
-    DBHelper dbh;
 
     private Account getAccFromSpin(Spinner sp, EditText et) throws IOException {
         Account acc = null;
@@ -34,9 +32,8 @@ public class CreateDealActivity extends AppCompatActivity{
             if (et.getText().toString().equals("")) {
                 Toast.makeText(getApplicationContext(), "Enter name of seller under \"Another\"", Toast.LENGTH_LONG).show();
                 throw new IOException();
-            } else {
+            } else
                 acc = new Account(et.getText().toString(), true);
-            }
         else
             for (Account a : accounts)
                 if (a.getName().equals(sp.getSelectedItem().toString()))
@@ -58,7 +55,6 @@ public class CreateDealActivity extends AppCompatActivity{
         additionSeller = (EditText) findViewById(R.id.dealAdditionSeller);
         dealSum = (EditText)  findViewById(R.id.dealSum);
         dealDescr = (EditText) findViewById(R.id.dealDescr);
-        dbh = new DBHelper(getApplicationContext());
 
         dealAdding_btm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +70,6 @@ public class CreateDealActivity extends AppCompatActivity{
                     } catch (Exception e) {
                         return;
                     }
-
                     double sum;
                     String note;
                     try {
@@ -93,8 +88,6 @@ public class CreateDealActivity extends AppCompatActivity{
                         return;
                     }
 
-                   // if(!accounts.contains(seller))
-
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("NewDeal", newDeal);
                     setResult(221, resultIntent);
@@ -105,7 +98,6 @@ public class CreateDealActivity extends AppCompatActivity{
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         accounts = (ArrayList<Account>)getIntent().getSerializableExtra("Accounts");
         spinnerSeller.setAdapter(spinnerAdapter);
         spinnerBuyer.setAdapter(spinnerAdapter);
@@ -113,6 +105,5 @@ public class CreateDealActivity extends AppCompatActivity{
             spinnerAdapter.add(a.getName());
         }
         spinnerAdapter.add("Another");
-
     }
 }

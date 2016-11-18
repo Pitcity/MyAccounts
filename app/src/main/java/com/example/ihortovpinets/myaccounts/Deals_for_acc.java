@@ -1,11 +1,13 @@
 package com.example.ihortovpinets.myaccounts;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,9 +23,11 @@ public class Deals_for_acc extends AppCompatActivity {
     List<Deal> filteredDeals = new ArrayList<Deal>();
     ListView dealsListView;
     String name;
+    Button btn_deleteAcc;
 
     private class DealsListAdapter extends ArrayAdapter<Deal> {
-        public DealsListAdapter() {super(Deals_for_acc.this, R.layout.listview_deals, filteredDeals);
+        public DealsListAdapter() {
+            super(Deals_for_acc.this, R.layout.listview_deals, filteredDeals);
         }
 
         @Override
@@ -38,6 +42,7 @@ public class Deals_for_acc extends AppCompatActivity {
             TextView seller = (TextView) view.findViewById(R.id.viewDeals_seller);
             TextView buyer = (TextView) view.findViewById(R.id.viewDeals_buyer);
             TextView descr = (TextView) view.findViewById(R.id.viewDeals_descr);
+
 
             date.setText(currentDeal.getDate());
             if (currentDeal.getSeller().getName().equals(name)) {
@@ -76,12 +81,24 @@ public class Deals_for_acc extends AppCompatActivity {
         setContentView(R.layout.deals_for_acc);
 
         dealsListView = (ListView) findViewById(R.id.listForDeals);
+        btn_deleteAcc = (Button) findViewById(R.id.btn_removeAcc);
 
         name = getIntent().getStringExtra("Name");
         TextView txtName = (TextView) findViewById(R.id.txtName2);
         txtName.setText(name);
         ArrayList<Deal> deals =  (ArrayList<Deal>)getIntent().getSerializableExtra("Deals");
 
+        btn_deleteAcc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DBHelper dbh = new DBHelper(getApplicationContext());
+                dbh.deleteAccFromBD(name);
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("isAccDeleted", name);
+                setResult(222, resultIntent);
+                Deals_for_acc.super.finish();
+            }
+        });
         for (Deal d: deals)
             if(d.getBuyer().getName().equals(name)||d.getSeller().getName().equals(name))
                 filteredDeals.add(d);

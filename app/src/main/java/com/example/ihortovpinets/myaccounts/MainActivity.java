@@ -1,8 +1,6 @@
 package com.example.ihortovpinets.myaccounts;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -22,7 +20,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<Account> myAccounts = new ArrayList<Account>();
-    //ArrayList<Account> allAccounts = new ArrayList<Account>();
     ArrayList<Deal> deals = new ArrayList<Deal>();
     ListView accsListView, dealsListView;
     EditText accName, accMoney, accDescr;
@@ -68,11 +65,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                boolean isExist = false;
-                for (Account o : myAccounts)
-                    if (o!=null && o.getName().equals(accName.getText().toString()))
-                        isExist=true;
-                if (isExist)
+                if (myAccounts.contains(new Account(accName.getText().toString(),false)))
                     Toast.makeText(getApplicationContext(),"Account with this name already exists", Toast.LENGTH_LONG).show();
                 else {
                     addAccount(accName.getText().toString(), Double.valueOf(accMoney.getText().toString()), accDescr.getText().toString(),false);
@@ -110,35 +103,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CreateDealActivity.class);
-                intent.putExtra("Accounts", myAccounts);// скопіювалось:? походу так
+                intent.putExtra("Accounts", myAccounts);
                 startActivityForResult(intent, 221);
             }
         });
         myAccounts = dbh.getAccListFromDB();
         deals = dbh.getDealListFromDB();
-        /*SQLiteDatabase mydatabase = openOrCreateDatabase("MyAccounts",MODE_PRIVATE,null);
-        //mydatabase.execSQL("DROP TABLE Accounts;");
 
-        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Accounts(AccName VARCHAR PRIMARY KEY, " +
-                "    deposit DOUBLE, " +
-                "    description VARCHAR," +
-                "    isOuter BOOLEAN);");
-        try {
-            mydatabase.execSQL("INSERT INTO Accounts VALUES('The first acc',2000,'lalala','false');");
-            mydatabase.execSQL("INSERT INTO Accounts VALUES('The second acc',70900,'lalala','false');");
-            mydatabase.execSQL("INSERT INTO Accounts VALUES('The third acc',5000,'lalala','true');");
-        } catch (Exception e) {
-            System.out.println("tratata db exception");
-        }
-
-        Cursor resultSet = mydatabase.rawQuery("Select * from Accounts",null);
-        resultSet.moveToFirst();
-        myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.getBoolean(resultSet.getString(3))));
-        do {
-            resultSet.moveToNext();
-            myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.getBoolean(resultSet.getString(3))));
-        } while (!resultSet.isLast());
-*/
         populateList();
         populateListofDeals();
     }
@@ -168,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         seller = a;
                 }
                 Deal newDeal1 = Deal.createDeal(buyer, seller, deal1.getNote(), deal1.getSum(), deal1.getDate());
-                if (newDeal1 == null) { //if deal wasn't created, then returned null
+                if (newDeal1 == null) {
                     Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -176,14 +147,19 @@ public class MainActivity extends AppCompatActivity {
                 dbh.updateAcc(seller);
                 addDeal(newDeal1);
                 dbh.addDealToDB(newDeal1);
-                deals = dbh.getDealListFromDB();
             } catch (NullPointerException np) {
                 Toast.makeText(getApplicationContext(), "Something went wrong while creating new deal", Toast.LENGTH_LONG).show();
                 return;
             }
-            populateList();
-            populateListofDeals();
         }
+        if (requestCode==222&&data!=null) {
+            String name = data.getStringExtra("isAccDeleted");
+            Toast.makeText(getApplicationContext(), name + " was successfully deleted", Toast.LENGTH_LONG).show();
+        }
+        deals = dbh.getDealListFromDB();
+        myAccounts = dbh.getAccListFromDB();
+        populateListofDeals();
+        populateList();
     }
 
     private void populateList () {
@@ -225,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, Deals_for_acc.class);
                             intent.putExtra("Name", name.getText().toString());
                             intent.putExtra("Deals", deals);
-                            startActivity(intent);
+                            startActivityForResult(intent,222);
                         }
                     }
             );
@@ -268,7 +244,5 @@ public class MainActivity extends AppCompatActivity {
             );*/
             return view;
         }
-
     }
-
 }
