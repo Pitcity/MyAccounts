@@ -3,23 +3,19 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1">
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtName2"
         android:layout_gravity="center_horizontal" />
-
     <ListView
         android:layout_width="match_parent"
         android:layout_height="233dp"
         android:id="@+id/listForDeals"
         android:layout_weight="0.98" />
-
     <Button
         android:text="Delete this Account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/btn_removeAcc" />
-
 </LinearLayout>

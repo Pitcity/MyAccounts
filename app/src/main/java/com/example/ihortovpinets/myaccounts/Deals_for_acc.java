@@ -33,17 +33,13 @@ public class Deals_for_acc extends AppCompatActivity {
         @Override
         public View getView(int position, View view, ViewGroup parent) {
             Deal currentDeal = filteredDeals.get(position);
-
             if (view == null)
                 view = getLayoutInflater().inflate(R.layout.listview_deals, parent, false);
-
             TextView date = (TextView) view.findViewById(R.id.viewDeals_Date);
             TextView sum = (TextView) view.findViewById(R.id.viewDeals_sum);
             TextView seller = (TextView) view.findViewById(R.id.viewDeals_seller);
             TextView buyer = (TextView) view.findViewById(R.id.viewDeals_buyer);
             TextView descr = (TextView) view.findViewById(R.id.viewDeals_descr);
-
-
             date.setText(currentDeal.getDate());
             if (currentDeal.getSeller().getName().equals(name)) {
                 sum.setTextColor(Color.GREEN);
@@ -53,11 +49,11 @@ public class Deals_for_acc extends AppCompatActivity {
                 sum.setTextColor(Color.RED);
                 sum.setText("-"+Double.toString(currentDeal.getSum()));
             }
-
             seller.setText(currentDeal.getSeller().getName());
             buyer.setText(currentDeal.getBuyer().getName());
             descr.setText(currentDeal.getNote());
-            /*view.setOnClickListener(
+            /*TODO:Possibility to rollBack deal with restorage of money on accs
+            view.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -79,15 +75,13 @@ public class Deals_for_acc extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.deals_for_acc);
-
         dealsListView = (ListView) findViewById(R.id.listForDeals);
         btn_deleteAcc = (Button) findViewById(R.id.btn_removeAcc);
-
+        btn_deleteAcc.setBackgroundColor(Color.RED);
         name = getIntent().getStringExtra("Name");
         TextView txtName = (TextView) findViewById(R.id.txtName2);
         txtName.setText(name);
         ArrayList<Deal> deals =  (ArrayList<Deal>)getIntent().getSerializableExtra("Deals");
-
         btn_deleteAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

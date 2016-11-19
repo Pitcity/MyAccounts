@@ -48,6 +48,8 @@ public class CreateDealActivity extends AppCompatActivity{
 
         mDatePicker = (DatePicker) findViewById(R.id.datePicker);
         mDatePicker.setCalendarViewShown(false);
+        mDatePicker.setMaxDate(new java.util.Date().getTime());
+        mDatePicker.setAlpha(0.6f);
         spinnerSeller = (Spinner) findViewById(R.id.dealSeller);
         spinnerBuyer= (Spinner) findViewById(R.id.dealBuyer);
         dealAdding_btm = (Button) findViewById(R.id.dealAdding_btn);
@@ -79,7 +81,7 @@ public class CreateDealActivity extends AppCompatActivity{
                         Toast.makeText(getApplicationContext(), "Enter correct value as ammount of the deal", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                    SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
                     String date = df.format(mDatePicker.getCalendarView().getDate());
 
                     Deal newDeal = Deal.createDeal(buyer, seller, note, sum, date);

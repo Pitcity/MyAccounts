@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    final static int DB_VER = 14;
+    final static int DB_VER = 15;
     final static String DB_NAME = "MyAccounts1.db";
     final String TABLE_NAME1 = "Accounts";
     final String TABLE_NAME2 = "Deals";
@@ -125,6 +125,22 @@ public class DBHelper extends SQLiteOpenHelper {
                     sqLiteDatabase.execSQL("DELETE FROM Deals WHERE id=" + resultSet.getString(5));
             }
         } catch (Exception e) {}
+    }
+
+    public ArrayList<DealDTO> getDealsByName(String asRole, String name) {
+        Cursor resultSet = this.getReadableDatabase().rawQuery("SELECT seller, buyer, date, SUM(sum) FROM Deals  WHERE "+ asRole +" ='" + name + "' GROUP BY date;",null);
+        ArrayList<DealDTO> myDeals = new ArrayList<>();
+        resultSet.moveToFirst();
+        try {
+            myDeals.add(new DealDTO(resultSet.getString(0),resultSet.getString(1),
+                    resultSet.getString(2), Double.valueOf(resultSet.getString(3))));
+            while (!resultSet.isLast()) {
+                resultSet.moveToNext();
+                myDeals.add(new DealDTO(resultSet.getString(0),resultSet.getString(1),
+                        resultSet.getString(2), Double.valueOf(resultSet.getString(3))));
+            }
+        } catch (Exception e) {}
+        return myDeals;
     }
 
     public void addDealToDB(Deal deal) {

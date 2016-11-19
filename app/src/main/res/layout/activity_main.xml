@@ -6,9 +6,7 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.ihortovpinets.myaccounts.MainActivity">
-
     <TabHost
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,12 +14,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
@@ -31,40 +27,67 @@
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-                <LinearLayout
+                <ScrollView
                     android:id="@+id/tabDealler"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical" >
-
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
                     <ListView
                         android:layout_width="match_parent"
+                        android:visibility="gone"
                         android:layout_height="wrap_content"
                         android:id="@+id/listView_seeDeals"
                         android:layout_gravity="center_horizontal" />
-                </LinearLayout>
-
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/barchar"
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp" />
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                            android:layout_marginTop="@dimen/activity_horizontal_margin">
+                            <TextView
+                                android:text="Check account"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/textView6" />
+                            <Spinner
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="left"
+                                android:id="@+id/accForChart_spn"
+                                android:layout_alignParentTop="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true" />
+                        </RelativeLayout>
+                        <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/barchart_perAcc"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"/>
+                    </LinearLayout>
+                </ScrollView>
                 <LinearLayout
                     android:id="@+id/tabCreator"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/textView"
                         android:text="Create new account"
                         android:layout_gravity="center_vertical" />
-
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/txtName"
                         android:hint="Name"
                         android:inputType="text" />
-
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -72,13 +95,11 @@
                         android:ems="10"
                         android:id="@+id/txtMoney"
                         android:hint="Money" />
-
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="40pt"
                         android:id="@+id/txtDescr"
                         android:hint="Description" />
-
                     <Button
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -86,35 +107,27 @@
                         android:id="@+id/btnCreateAccount"
                         android:textSize="8pt"
                         android:enabled="false"
-                        android:layout_gravity="center_horizontal"
-                        />
+                        android:layout_gravity="center_horizontal" />
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/tabStoreList"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceLarge"
-                        android:text="Accounts"
-                        />
-
+                        android:text="Accounts" />
                     <ListView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/listView"
                         android:layout_gravity="center_horizontal" />
                 </LinearLayout>
-
             </FrameLayout>
-
         </LinearLayout>
     </TabHost>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -123,5 +136,4 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
 </RelativeLayout>
