@@ -22,7 +22,7 @@ public class Account implements Serializable {
     public Account(String name, double deposit, String description, boolean flag) {
         this.name = name;
         this.deposit = deposit;
-        this.isOuter=flag;
+        this.isOuter = flag;
         this.description = description;
     }
 
@@ -38,7 +38,7 @@ public class Account implements Serializable {
         return description;
     }
 
-    public boolean depositIsChanged (double ammount){
+    public boolean depositIsChanged(double ammount) {
         if (!isOuter)
             if (-ammount > this.deposit)
                 return false;

@@ -11,7 +11,7 @@ public class DealDTO {
     double sum;
 
     DealDTO(String seller, String buyer, String date, double sum) {
-        this.seller= seller;
+        this.seller = seller;
         this.buyer = buyer;
         this.date = date;
         this.sum = sum;

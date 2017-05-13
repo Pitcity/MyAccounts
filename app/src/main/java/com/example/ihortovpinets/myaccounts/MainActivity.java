@@ -1,12 +1,12 @@
 package com.example.ihortovpinets.myaccounts;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.provider.ContactsContract;
-import android.support.v7.app.AppCompatActivity;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,10 +28,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.ArrayList;
 
@@ -64,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
         chart_perAcc = (BarChart) findViewById(R.id.barchart_perAcc);
         accForChart_spn = (Spinner) findViewById(R.id.accForChart_spn);
 
-        TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
+        TabHost tabHost = (TabHost) findViewById(R.id.tabHost); //// TODO: 13.05.2017 fragment, viewPager 
         tabHost.setup();
 
-        TabHost.TabSpec tabSpec = tabHost.newTabSpec("creator");
+        TabHost.TabSpec tabSpec = tabHost.newTabSpec("creator");//// TODO: 13.05.2017 string into constants 
         tabSpec.setContent(R.id.tabCreator);
         tabSpec.setIndicator("Creator");
         tabHost.addTab(tabSpec);
@@ -80,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
         tabSpec.setIndicator("Stats");
         tabHost.addTab(tabSpec);
         final Button btnCrAcc = (Button) findViewById(R.id.btnCreateAccount);
+        btnCrAcc.post(new Runnable() {
+            @Override
+            public void run() {
+                Rect r = new Rect();
+                btnCrAcc.getHitRect(r);
+                r.bottom += 50;
+                r.left -= 200;
+                r.top = 0;
+                ((View) btnCrAcc.getParent().getParent()).setTouchDelegate(new TouchDelegate(r, btnCrAcc));
+            }
+        });
+
         btnCrAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,9 +130,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String statisticForAcc = accForChart_spn.getSelectedItem().toString();
-                updateBarChart(dbh.getDealsByName("seller",statisticForAcc),dbh.getDealsByName("buyer",statisticForAcc));
+                updateBarChart(dbh.getDealsByName("seller", statisticForAcc), dbh.getDealsByName("buyer", statisticForAcc));
                 Toast.makeText(getApplicationContext(), "Are you sure you wanna see that? :D click here if so :P", Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
@@ -148,15 +157,15 @@ public class MainActivity extends AppCompatActivity {
         populateListofDeals();
     }
 
-    private void updateBarChart(ArrayList<DealDTO> dealsByNameAsSeller,ArrayList<DealDTO> dealsByNameAsBuyer) {
+    private void updateBarChart(ArrayList<DealDTO> dealsByNameAsSeller, ArrayList<DealDTO> dealsByNameAsBuyer) {
         ArrayList<BarEntry> entries = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
         int i = 0;
-        for (DealDTO dd: dealsByNameAsBuyer) {
+        for (DealDTO dd : dealsByNameAsBuyer) {
             entries.add(new BarEntry((float) (dd.getSum()), i));
             labels.add(dd.getDate());
             i++;
-            }
+        }
         BarDataSet dataset = new BarDataSet(entries, "Витрати");
         dataset.setColors(ColorTemplate.COLORFUL_COLORS);
         BarData data = new BarData(labels, dataset);
@@ -285,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
         public DealsListAdapter() {
             super(MainActivity.this, R.layout.listview_deals, deals);
         }
+
         @Override
         public View getView(int position, View view, ViewGroup parent) {
             if (view == null)

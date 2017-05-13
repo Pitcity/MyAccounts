@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -43,11 +42,10 @@ public class Deals_for_acc extends AppCompatActivity {
             date.setText(currentDeal.getDate());
             if (currentDeal.getSeller().getName().equals(name)) {
                 sum.setTextColor(Color.GREEN);
-                sum.setText("+"+Double.toString(currentDeal.getSum()));
-            }
-            else {
+                sum.setText("+" + Double.toString(currentDeal.getSum()));
+            } else {
                 sum.setTextColor(Color.RED);
-                sum.setText("-"+Double.toString(currentDeal.getSum()));
+                sum.setText("-" + Double.toString(currentDeal.getSum()));
             }
             seller.setText(currentDeal.getSeller().getName());
             buyer.setText(currentDeal.getBuyer().getName());
@@ -64,12 +62,13 @@ public class Deals_for_acc extends AppCompatActivity {
                     }
             );*/
             return view;
-        }}
-
-        private void populateListofDeals () {
-            ArrayAdapter<Deal> adapter = new DealsListAdapter();
-            dealsListView.setAdapter(adapter);
         }
+    }
+
+    private void populateListofDeals() {
+        ArrayAdapter<Deal> adapter = new DealsListAdapter();
+        dealsListView.setAdapter(adapter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +80,7 @@ public class Deals_for_acc extends AppCompatActivity {
         name = getIntent().getStringExtra("Name");
         TextView txtName = (TextView) findViewById(R.id.txtName2);
         txtName.setText(name);
-        ArrayList<Deal> deals =  (ArrayList<Deal>)getIntent().getSerializableExtra("Deals");
+        ArrayList<Deal> deals = (ArrayList<Deal>) getIntent().getSerializableExtra("Deals");
         btn_deleteAcc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,8 +92,8 @@ public class Deals_for_acc extends AppCompatActivity {
                 Deals_for_acc.super.finish();
             }
         });
-        for (Deal d: deals)
-            if(d.getBuyer().getName().equals(name)||d.getSeller().getName().equals(name))
+        for (Deal d : deals)
+            if (d.getBuyer().getName().equals(name) || d.getSeller().getName().equals(name))
                 filteredDeals.add(d);
 
         populateListofDeals();

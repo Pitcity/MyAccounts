@@ -18,13 +18,13 @@ import java.util.ArrayList;
 /**
  * Created by IhorTovpinets on 15.09.2016.
  */
-public class CreateDealActivity extends AppCompatActivity{
+public class CreateDealActivity extends AppCompatActivity {
 
     DatePicker mDatePicker;
     ArrayList<Account> accounts;
     Spinner spinnerSeller, spinnerBuyer;
     Button dealAdding_btm;
-    EditText additionSeller, additionBuyer, dealSum,dealDescr;
+    EditText additionSeller, additionBuyer, dealSum, dealDescr;
 
     private Account getAccFromSpin(Spinner sp, EditText et) throws IOException {
         Account acc = null;
@@ -51,11 +51,11 @@ public class CreateDealActivity extends AppCompatActivity{
         mDatePicker.setMaxDate(new java.util.Date().getTime());
         mDatePicker.setAlpha(0.6f);
         spinnerSeller = (Spinner) findViewById(R.id.dealSeller);
-        spinnerBuyer= (Spinner) findViewById(R.id.dealBuyer);
+        spinnerBuyer = (Spinner) findViewById(R.id.dealBuyer);
         dealAdding_btm = (Button) findViewById(R.id.dealAdding_btn);
         additionBuyer = (EditText) findViewById(R.id.dealAdditionBuyer);
         additionSeller = (EditText) findViewById(R.id.dealAdditionSeller);
-        dealSum = (EditText)  findViewById(R.id.dealSum);
+        dealSum = (EditText) findViewById(R.id.dealSum);
         dealDescr = (EditText) findViewById(R.id.dealDescr);
 
         dealAdding_btm.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +64,7 @@ public class CreateDealActivity extends AppCompatActivity{
                 Account buyer;
                 Account seller;
                 if (spinnerBuyer.getSelectedItem().toString().equals(spinnerSeller.getSelectedItem().toString()))
-                    Toast.makeText(getApplicationContext(),"One acc cant be as buyer and seller in ne deal, change it pls", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "One acc cant be as buyer and seller in ne deal, change it pls", Toast.LENGTH_LONG).show();
                 else {
                     try {
                         seller = getAccFromSpin(spinnerSeller, additionSeller);
@@ -100,10 +100,10 @@ public class CreateDealActivity extends AppCompatActivity{
 
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        accounts = (ArrayList<Account>)getIntent().getSerializableExtra("Accounts");
+        accounts = (ArrayList<Account>) getIntent().getSerializableExtra("Accounts");
         spinnerSeller.setAdapter(spinnerAdapter);
         spinnerBuyer.setAdapter(spinnerAdapter);
-        for (Account a: accounts) {
+        for (Account a : accounts) {
             spinnerAdapter.add(a.getName());
         }
         spinnerAdapter.add("Another");
