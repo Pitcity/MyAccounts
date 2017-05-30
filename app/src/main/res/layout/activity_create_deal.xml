@@ -1,93 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp">
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:id="@+id/dealSum"
-        android:inputType="numberDecimal"
-        android:hint="Sum"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignLeft="@+id/dealAdding_btn"
-        android:layout_alignStart="@+id/dealAdding_btn" />
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dealBuyer"
-        android:layout_above="@+id/dealAdditionSeller"
-        android:layout_toRightOf="@+id/textView4"
-        android:layout_toEndOf="@+id/textView4" />
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dealSeller"
-        android:layout_below="@+id/dealSum"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dealAdditionBuyer"
-        android:layout_below="@+id/dealBuyer"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/dealBuyer"
-        android:layout_alignRight="@+id/dealBuyer"
-        android:layout_alignEnd="@+id/dealBuyer" />
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dealAdditionSeller"
-        android:layout_below="@+id/dealSeller"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignLeft="@+id/textView5"
-        android:layout_alignStart="@+id/textView5" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/create_deal_main_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/dealSum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/dealAdding_btn"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/dealAdding_btn"
+                android:ems="10"
+                android:hint="@string/sum"
+                android:inputType="numberDecimal"/>
+
+            <EditText
+                android:id="@+id/dealDescr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_toStartOf="@+id/dealSum"
+                android:hint="@string/create_deal_descr"
+                android:maxLines="1"/>
+        </LinearLayout>
+
+        <Spinner
+            android:id="@+id/dealBuyer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/dealAdditionSeller"
+            android:layout_toEndOf="@+id/textView4"
+            android:layout_toRightOf="@+id/textView4"/>
+
+        <Spinner
+            android:id="@+id/dealSeller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/dealSum"/>
+
+
+        <EditText
+            android:id="@+id/dealAdditionBuyer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/dealBuyer"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/dealBuyer"
+            android:layout_below="@+id/dealBuyer"
+            android:layout_toStartOf="@+id/dealBuyer"
+            android:maxLines="1"/>
+
+        <EditText
+            android:id="@+id/dealAdditionSeller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView5"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@+id/textView5"
+            android:layout_below="@+id/dealSeller"
+            android:maxLines="1"/>
+
+        <Button
+            android:id="@+id/dealAdding_btn"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="Add Deal"/>
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignTop="@+id/dealSeller"
+            android:text="@string/short_mark_for_buyer"/>
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/dealSeller"
+            android:layout_toLeftOf="@+id/dealSeller"
+            android:layout_toStartOf="@+id/dealSeller"
+            android:text="@string/short_mark_for_seller"/>
+
+    </RelativeLayout>
+
     <DatePicker
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
         android:id="@+id/datePicker"
-        android:layout_below="@+id/dealAdditionBuyer"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Deal"
-        android:id="@+id/dealAdding_btn"
-        android:layout_below="@+id/datePicker"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/dealDescr"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/dealSum"
-        android:hint="Some description" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="B: "
-        android:id="@+id/textView4"
-        android:layout_alignTop="@+id/dealSeller"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="S: "
-        android:id="@+id/textView5"
-        android:layout_alignTop="@+id/dealSeller"
-        android:layout_toLeftOf="@+id/dealSeller"
-        android:layout_toStartOf="@+id/dealSeller" />
+        android:layout_below="@+id/create_deal_main_container"
+        android:layout_centerInParent="true"
+        android:layout_gravity="right"/>
 </RelativeLayout>

@@ -23,8 +23,9 @@ public class Deal implements Serializable {
     }
 
     public static Deal createDeal(Account buyer, Account seller, String note, double sum, String date) {
-        if (buyer.depositIsChanged(-sum) && seller.depositIsChanged(sum))
+        if (buyer.depositIsChanged(-sum) && seller.depositIsChanged(sum)) {
             return new Deal(buyer, seller, note, sum, date);
+        }
         return null;
     }
 

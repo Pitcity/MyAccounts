@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="accounts_frg_id" type="id"/>
+    <item name="stats_frg_id" type="id"/>
+    <item name="account_name_key" type="id"/>
+    <item name="save" type="id">Save</item>
+</resources>

@@ -18,21 +18,22 @@
         android:id="@+id/listView_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/listView_name"
-        android:layout_toEndOf="@+id/listView_name"
-        android:layout_toRightOf="@+id/listView_name"
         android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginRight="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_alignTop="@+id/listView_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 
     <TextView
         android:id="@+id/listView_descr"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/listView_name"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
         android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_below="@+id/listView_name"
+        android:layout_alignLeft="@+id/listView_name"
+        android:layout_alignStart="@+id/listView_name"/>
 
 </RelativeLayout>

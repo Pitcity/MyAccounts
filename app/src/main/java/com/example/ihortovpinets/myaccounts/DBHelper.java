@@ -145,7 +145,7 @@ class DBHelper extends SQLiteOpenHelper {
                 "Deals (seller, buyer, note, sum, date) " +
             "VALUES(" +
                 "'[SELLER]','[BUYER]','[NOTE]',[SUM],'[DATE]'" + //// TODO: 13.05.2017 make date as double not string
-            ")'";
+            ")";
 
     private final String TABLE_ACCOUNTS_CREATE = "" +
             "CREATE TABLE IF NOT EXISTS " + TABLE_ACCOUNTS_NAME + "(" +

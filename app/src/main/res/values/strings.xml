@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MyAccounts</string>
+    <string name="stats_frg_name">Stats</string>
+    <string name="account_frg_name">Accounts</string>
+    <string name="accounts">Accounts</string>
+    <string name="create_new_account">New account</string>
+    <string name="add_new_deal">New deal</string>
+    <string name="short_mark_for_seller">S:</string>
+    <string name="short_mark_for_buyer">B:</string>
+    <string name="create_deal_descr">Description</string>
+    <string name="sum">Sum</string>
+    <string name="save">Save</string>
 </resources>
