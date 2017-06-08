@@ -1,0 +1,8 @@
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="min_padding">4dp</dimen>
+    <dimen name="padding">8dp</dimen>
+    <dimen name="base_padding">14dp</dimen>
+    <dimen name="chart_min_height">600dp</dimen>
+</resources>

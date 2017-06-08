@@ -42,12 +42,14 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-			case CreateDealActivity.CODE_FOR_CREATING_DEAL:
-				if(data.getBooleanExtra(CreateDealActivity.DEAL_CREATED, false)) {
-					mAdapter.notifyDataSetChanged();
-				}
-				break;
+		if (data != null) {
+			switch (requestCode) {
+				case CreateDealActivity.CODE_FOR_CREATING_DEAL:
+					if (data.getBooleanExtra(CreateDealActivity.DEAL_CREATED, false)) {
+						mAdapter.notifyDataSetChanged();
+					}
+					break;
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}

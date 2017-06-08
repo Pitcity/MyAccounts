@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/base_card_background"
+                android:padding="@dimen/padding">
+
+
+    <TextView
+        android:id="@+id/card_account_short_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/min_padding"
+        android:text="@string/short_mark_for_buyer"/>
+
+    <Spinner
+        android:id="@+id/card_account_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/card_account_short_label"/>
+
+    <EditText
+        android:id="@+id/card_another_account_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/card_account_spinner"
+        android:layout_below="@+id/card_account_spinner"
+        android:background="@drawable/card_edit_text_style"
+        android:maxLines="1"/>
+
+</RelativeLayout>

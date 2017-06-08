@@ -10,4 +10,6 @@
     <string name="create_deal_descr">Description</string>
     <string name="sum">Sum</string>
     <string name="save">Save</string>
+    <string name="another_account">external</string>
+    <string name="card_undefined_value">underfind</string>
 </resources>

@@ -9,12 +9,11 @@
     </style>
 
     <style name="ActionBarTextStyle" parent="AppTheme">
-        <item name="android:textColor">#FFff00</item>
+        <item name="android:textColor">@color/tab_text</item>
         <item name="android:textSize">30sp</item>
-        <item name="android:background">#FF44</item>
+        <item name="android:background">@color/tab_background</item>
         <item name="android:drawablePadding">10dp</item>
         <item name="android:layout_margin">20dp</item>
-
     </style>
 
 </resources>

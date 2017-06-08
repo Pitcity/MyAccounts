@@ -10,109 +10,136 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <RelativeLayout
+            android:id="@+id/create_deal_top_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/create_deal_middle_container"
+            android:paddingTop="@dimen/base_padding">
+
+            <TextView
+                android:id="@+id/dropdown_seller_acc_deposit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:paddingLeft="@dimen/min_padding"
+                android:paddingRight="@dimen/min_padding"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="8sp"/>
+
+            <RelativeLayout
+                android:id="@+id/card_seller"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/dropdown_seller_acc_deposit"
+                android:background="@drawable/base_card_background"
+                android:padding="@dimen/padding">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/min_padding"
+                    android:text="@string/short_mark_for_seller"/>
+
+                <Spinner
+                    android:id="@+id/dealSeller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/textView4"/>
+
+                <EditText
+                    android:id="@+id/dealAdditionSeller"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/dealSeller"
+                    android:layout_below="@+id/dealSeller"
+                    android:background="@drawable/card_edit_text_style"
+                    android:maxLines="1"
+                    android:maxLength="14"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/dropdown_buyer_acc_deposit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="@dimen/min_padding"
+                android:paddingRight="@dimen/min_padding"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="8sp"/>
+
+            <RelativeLayout
+                android:id="@+id/card_buyer"
+                android:layout_below="@+id/dropdown_buyer_acc_deposit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/base_card_background"
+                android:padding="@dimen/padding">
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/min_padding"
+                    android:text="@string/short_mark_for_buyer"/>
+
+                <Spinner
+                    android:id="@+id/dealBuyer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/textView5"/>
+
+                <EditText
+                    android:id="@+id/dealAdditionBuyer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignEnd="@+id/dealBuyer"
+                    android:layout_below="@+id/dealBuyer"
+                    android:background="@drawable/card_edit_text_style"
+                    android:maxLength="14"
+                    android:maxLines="1"
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
         <LinearLayout
+            android:id="@+id/create_deal_middle_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/dealSum"
-                android:layout_width="wrap_content"
+                android:id="@+id/dealDescr"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/dealAdding_btn"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignStart="@+id/dealAdding_btn"
-                android:ems="10"
-                android:hint="@string/sum"
-                android:inputType="numberDecimal"/>
+                android:layout_marginRight="@dimen/base_padding"
+                android:layout_weight="3"
+                android:background="@drawable/edit_text_style"
+                android:hint="@string/create_deal_descr"
+                android:maxLength="50"
+                android:maxLines="1"/>
 
             <EditText
-                android:id="@+id/dealDescr"
-                android:layout_width="wrap_content"
+                android:id="@+id/dealSum"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_toStartOf="@+id/dealSum"
-                android:hint="@string/create_deal_descr"
-                android:maxLines="1"/>
+                android:layout_weight="1"
+                android:background="@drawable/edit_text_style"
+                android:hint="@string/sum"
+                android:inputType="numberDecimal"
+                android:maxLength="10"
+                android:paddingLeft="@dimen/min_padding"/>
+
         </LinearLayout>
-
-        <Spinner
-            android:id="@+id/dealBuyer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/dealAdditionSeller"
-            android:layout_toEndOf="@+id/textView4"
-            android:layout_toRightOf="@+id/textView4"/>
-
-        <Spinner
-            android:id="@+id/dealSeller"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/dealSum"/>
-
-
-        <EditText
-            android:id="@+id/dealAdditionBuyer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/dealBuyer"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/dealBuyer"
-            android:layout_below="@+id/dealBuyer"
-            android:layout_toStartOf="@+id/dealBuyer"
-            android:maxLines="1"/>
-
-        <EditText
-            android:id="@+id/dealAdditionSeller"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textView5"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignStart="@+id/textView5"
-            android:layout_below="@+id/dealSeller"
-            android:maxLines="1"/>
-
-        <Button
-            android:id="@+id/dealAdding_btn"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="Add Deal"/>
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignTop="@+id/dealSeller"
-            android:text="@string/short_mark_for_buyer"/>
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/dealSeller"
-            android:layout_toLeftOf="@+id/dealSeller"
-            android:layout_toStartOf="@+id/dealSeller"
-            android:text="@string/short_mark_for_seller"/>
 
     </RelativeLayout>
 
-    <DatePicker
-        android:id="@+id/datePicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/create_deal_main_container"
-        android:layout_centerInParent="true"
-        android:layout_gravity="right"/>
 </RelativeLayout>

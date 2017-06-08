@@ -1,20 +1,27 @@
 package com.example.ihortovpinets.myaccounts;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.DatePicker;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import static android.view.View.GONE;
 
 /**
  * Created by IhorTovpinets on 15.09.2016.
@@ -24,25 +31,39 @@ public class CreateDealActivity extends AppCompatActivity {
 	public static final String DEAL_CREATED = "DEAL_CREATED";
 	public static final int CODE_FOR_CREATING_DEAL = 221;
 
-	DatePicker mDatePicker;
-	ArrayList<Account> accounts;
-	Spinner spinnerSeller, spinnerBuyer;
-	Button dealAdding_btm;
-	EditText additionSeller, additionBuyer, dealSum, dealDescr;
+	ArrayList<Account> mAccounts;
+	Spinner mSpinnerSeller, mSpinnerBuyer;
+	EditText mExternalSeller, mExternalBuyer, mDealSum, mDealDescr;
+	private TextView mBuyerDeposit, mSellerDeposit;
 
-	private Account getAccFromSpin(Spinner sp, EditText et) throws IOException {
-		Account acc = null;
-		if (sp.getSelectedItem().equals("Another"))
-			if (et.getText().toString().equals("")) {
-				Toast.makeText(getApplicationContext(), "Enter name of seller under \"Another\"", Toast.LENGTH_LONG).show();
-				throw new IOException();
-			} else
-				acc = new Account(et.getText().toString(), true);
-		else
-			for (Account a : accounts)
-				if (a.getName().equals(sp.getSelectedItem().toString()))
-					acc = a;
-		return acc;
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_create_deal);
+		mSpinnerSeller = (Spinner) findViewById(R.id.dealSeller);
+		mSpinnerBuyer = (Spinner) findViewById(R.id.dealBuyer);
+		mExternalBuyer = (EditText) findViewById(R.id.dealAdditionBuyer);
+		mExternalSeller = (EditText) findViewById(R.id.dealAdditionSeller);
+		mDealSum = (EditText) findViewById(R.id.dealSum);
+		mDealDescr = (EditText) findViewById(R.id.dealDescr);
+		mBuyerDeposit = (TextView) findViewById(R.id.dropdown_buyer_acc_deposit);
+		mSellerDeposit = (TextView) findViewById(R.id.dropdown_seller_acc_deposit);
+		SpinnerAdapter spinnerAdapter = getSpinnerAdapter(getApplicationContext());
+		mAccounts = new DBHelper(this).getAccListFromDB();
+		mSpinnerSeller.setAdapter(spinnerAdapter);
+		mSpinnerBuyer.setAdapter(spinnerAdapter);
+	}
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuItem mi = menu.add(0, R.id.save, 0, getResources().getString(R.string.save));
+		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		mi.setIcon(R.drawable._ic_btn_save_xml);
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -50,41 +71,47 @@ public class CreateDealActivity extends AppCompatActivity {
 		switch (item.getItemId()) {
 			case R.id.save:
 				if (validateDataForDeal()) {
-					Intent resultIntent = new Intent();
-					resultIntent.putExtra(DEAL_CREATED, true);
-					setResult(CODE_FOR_CREATING_DEAL, resultIntent);
+					Toast.makeText(getApplicationContext(), "Deal Created", Toast.LENGTH_LONG).show();
+					setResult(CODE_FOR_CREATING_DEAL, new Intent().putExtra(DEAL_CREATED, true));
 					finish();
 				}
 				break;
+			case android.R.id.home:
+				setResult(CODE_FOR_CREATING_DEAL, new Intent().putExtra(DEAL_CREATED, false));
+				NavUtils.navigateUpFromSameTask(this);
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	private boolean validateDataForDeal() {//// TODO: 30.05.2017 rewrite this method. No logic with exceptions, etc..
+	private Account getAccFromSpin(Spinner sp, EditText et) {
+		return sp.getSelectedItemPosition() == mAccounts.size()
+				? TextUtils.isEmpty(et.getText())
+				? null
+				: new Account(et.getText().toString(), true)
+				: (Account) sp.getAdapter().getItem(sp.getSelectedItemPosition());
+	}
+
+	private boolean validateDataForDeal() {
 		Account buyer, seller;
-		if (spinnerBuyer.getSelectedItem().toString().equals(spinnerSeller.getSelectedItem().toString())) {
-			Toast.makeText(getApplicationContext(), "One acc cant be as buyer and seller in ne deal, change it pls", Toast.LENGTH_LONG).show();
+		if (mSpinnerBuyer.getSelectedItemPosition() == mSpinnerSeller.getSelectedItemPosition()) {
+			Toast.makeText(getApplicationContext(), "Seller and Buyer should be different mAccounts", Toast.LENGTH_LONG).show();
 			return false;
 		} else {
-			try {
-				seller = getAccFromSpin(spinnerSeller, additionSeller);
-				buyer = getAccFromSpin(spinnerBuyer, additionBuyer);
-			} catch (Exception e) {
+			seller = getAccFromSpin(mSpinnerSeller, mExternalSeller);
+			buyer = getAccFromSpin(mSpinnerBuyer, mExternalBuyer);
+			if (seller == null || buyer == null) {
+				Toast.makeText(getApplicationContext(), "Point the name for external account", Toast.LENGTH_LONG).show();
 				return false;
 			}
-			double sum;
-			String note;
-			try {
-				sum = Double.valueOf(dealSum.getText().toString());
-				note = dealDescr.getText().toString();
-			} catch (Exception e) {
-				Toast.makeText(getApplicationContext(), "Enter correct value as ammount of the deal", Toast.LENGTH_LONG).show();
-				return false;
-			}
-			SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-			String date = df.format(mDatePicker.getCalendarView().getDate());
 
-			Deal newDeal = Deal.createDeal(buyer, seller, note, sum, date); //// TODO: 30.05.2017 rewrite method
+			if (TextUtils.isEmpty(mDealSum.getText())) {
+				Toast.makeText(getApplicationContext(), "Enter positive amount for the deal", Toast.LENGTH_LONG).show();
+				return false;
+			}
+			double sum = Double.valueOf(mDealSum.getText().toString());
+			String note = mDealDescr.getText().toString();
+
+			Deal newDeal = Deal.createDeal(buyer, seller, note, sum, new java.util.Date().toString()); //// TODO: 30.05.2017 rewrite method
 			if (newDeal == null) {
 				Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
 				return false;
@@ -98,39 +125,89 @@ public class CreateDealActivity extends AppCompatActivity {
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuItem mi = menu.add(0, R.id.save, 0, getResources().getString(R.string.save));
-		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		mi.setIcon(R.drawable._ic_btn_save_xml);
-		return super.onCreateOptionsMenu(menu);
+	private void checkAnotherAcc() {
+		mExternalBuyer.setVisibility(mSpinnerBuyer.getSelectedItemPosition() == mAccounts.size() ? View.VISIBLE : GONE);
+		mExternalSeller.setVisibility(mSpinnerSeller.getSelectedItemPosition() == mAccounts.size() ? View.VISIBLE : GONE);
+		mSellerDeposit.setText(mSpinnerSeller.getSelectedItemPosition() == mAccounts.size() ? getResources().getString(R.string.card_undefined_value) : Double.valueOf(((Account) mSpinnerSeller.getAdapter().getItem(mSpinnerSeller.getSelectedItemPosition())).getDeposit()).toString());
+		mBuyerDeposit.setText(mSpinnerBuyer.getSelectedItemPosition() == mAccounts.size() ? getResources().getString(R.string.card_undefined_value) : Double.valueOf(((Account) mSpinnerBuyer.getAdapter().getItem(mSpinnerBuyer.getSelectedItemPosition())).getDeposit()).toString());
 	}
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_create_deal);
+	public SpinnerAdapter getSpinnerAdapter(final Context context) {
 
-		mDatePicker = (DatePicker) findViewById(R.id.datePicker);
-		mDatePicker.setCalendarViewShown(false);
-		mDatePicker.setMaxDate(new java.util.Date().getTime());
-		mDatePicker.setAlpha(0.6f);
-		spinnerSeller = (Spinner) findViewById(R.id.dealSeller);
-		spinnerBuyer = (Spinner) findViewById(R.id.dealBuyer);
-		dealAdding_btm = (Button) findViewById(R.id.dealAdding_btn);
-		additionBuyer = (EditText) findViewById(R.id.dealAdditionBuyer);
-		additionSeller = (EditText) findViewById(R.id.dealAdditionSeller);
-		dealSum = (EditText) findViewById(R.id.dealSum);
-		dealDescr = (EditText) findViewById(R.id.dealDescr);
+		final SpinnerAdapter spinnerAdapter = new SpinnerAdapter() {
 
-		ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
-		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		accounts = new DBHelper(this).getAccListFromDB();
-		spinnerSeller.setAdapter(spinnerAdapter);
-		spinnerBuyer.setAdapter(spinnerAdapter);
-		for (Account a : accounts) {
-			spinnerAdapter.add(a.getName());
-		}
-		spinnerAdapter.add("Another");
+			@Override
+			public View getDropDownView(int position, View convertView, ViewGroup parent) {
+				convertView = LayoutInflater.from(context).inflate(R.layout.dropdond_card_item, null);
+				TextView accountName = (TextView) convertView.findViewById(R.id.dropdown_acc_name);
+				TextView accountDeposit = (TextView) convertView.findViewById(R.id.dropdown_acc_deposit);
+				Account currentAcc = (Account) getItem(position);
+				accountName.setText(currentAcc.getName());
+				accountDeposit.setText(currentAcc.isOuter ? getResources().getString(R.string.card_undefined_value) : Double.toString(currentAcc.getDeposit()));
+				return convertView;
+			}
+
+			@Override
+			public void registerDataSetObserver(DataSetObserver observer) {
+			}
+
+			@Override
+			public void unregisterDataSetObserver(DataSetObserver observer) {
+				checkAnotherAcc();
+			}
+
+			@Override
+			public int getCount() {
+				return mAccounts.size() + 1;
+			}
+
+			@Override
+			public Object getItem(int position) {
+				if (position > mAccounts.size() - 1) {
+					return new Account(getResources().getString(R.string.another_account), true);
+				} else
+					return mAccounts.get(position);
+			}
+
+			@Override
+			public long getItemId(int position) {
+				return 0;
+			}
+
+			@Override
+			public boolean hasStableIds() {
+				return false;
+			}
+
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				convertView = LayoutInflater.from(context).inflate(R.layout.dropdond_card_item, null);
+				TextView accountName = (TextView) convertView.findViewById(R.id.dropdown_acc_name);
+				TextView accountDeposit = (TextView) convertView.findViewById(R.id.dropdown_acc_deposit);
+				convertView.findViewById(R.id.separate_line).setVisibility(GONE);
+				Account currentAcc = (Account) getItem(position);
+				accountName.setText(currentAcc.getName());
+				accountDeposit.setVisibility(GONE);
+				//accountDeposit.setText(currentAcc.isOuter ? getResources().getString(R.string.card_undefined_value) : Double.toString(currentAcc.getDeposit()));
+				return convertView;
+			}
+
+			@Override
+			public int getItemViewType(int position) {
+				return 1;
+			}
+
+			@Override
+			public int getViewTypeCount() {
+				return 1;
+			}
+
+			@Override
+			public boolean isEmpty() {
+				return false;
+			}
+		};
+		return spinnerAdapter;
 	}
+
 }
