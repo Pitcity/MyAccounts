@@ -15,13 +15,18 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Deals_for_acc">
+        <activity android:name=".DealsForAccountActivity">
             <!--android:label="@string/about_title">-->
         </activity>
         <activity
             android:name=".CreateDealActivity"
             android:parentActivityName=".MainPageActivity">
-        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+        </activity>
+        <activity
+            android:name=".CreateAccountActivity"
+            android:parentActivityName=".MainPageActivity">
+        </activity>
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"

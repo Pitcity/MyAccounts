@@ -13,125 +13,158 @@ import java.util.ArrayList;
 
 class DBHelper extends SQLiteOpenHelper {
 
-    final static int DB_VER = 1;
+	private final static int DB_VER = 2;
 
-    final static String DB_NAME = "MyAccounts.db";
-    final static String TABLE_ACCOUNTS_NAME = "Accounts";
-    final static String TABLE_DEALS_NAME = "Deals";
+	private final static String DB_NAME = "MyAccounts.db";
+	private final static String TABLE_ACCOUNTS_NAME = "Accounts";
+	private final static String TABLE_DEALS_NAME = "Deals";
 
-    SQLiteDatabase mDatabase = null;
+	private SQLiteDatabase mDatabase = null;
 
-    DBHelper(Context context) {
-        super(context, DB_NAME, null, DB_VER);
-        mDatabase = this.getReadableDatabase();
-    }
+	DBHelper(Context context) {
+		super(context, DB_NAME, null, DB_VER);
+		mDatabase = this.getReadableDatabase();
+	}
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(TABLE_ACCOUNTS_CREATE);
-        sqLiteDatabase.execSQL(TABLE_DEALS_CREATE);
-        fillDb(sqLiteDatabase);
-    }
+	@Override
+	public void onCreate(SQLiteDatabase sqLiteDatabase) {
+		sqLiteDatabase.execSQL(TABLE_ACCOUNTS_CREATE);
+		sqLiteDatabase.execSQL(TABLE_DEALS_CREATE);
+		fillDb(sqLiteDatabase);
+	}
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL(TABLE_ACCOUNTS_DROP);
-        sqLiteDatabase.execSQL(TABLE_DEALS_DROP);
-        onCreate(sqLiteDatabase);
-    }
+	@Override
+	public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+		sqLiteDatabase.execSQL(TABLE_ACCOUNTS_DROP);
+		sqLiteDatabase.execSQL(TABLE_DEALS_DROP);
+		onCreate(sqLiteDatabase);
+	}
 
-    private void fillDb(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('FirstAcc',2000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('SecondAcc',7000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('ThirdAcc',5000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO Deals (seller, buyer, note, sum, date) VALUES('FirstAcc','SecondAcc','commentFor first deal',1000,'19-вер.-2016');");
-    }
+	private void fillDb(SQLiteDatabase sqLiteDatabase) {
+		sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('FirstAcc',2000,'lalala','false');");
+		sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('SecondAcc',7000,'lalala','false');");
+		sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('ThirdAcc',5000,'lalala','false');");
+		sqLiteDatabase.execSQL("INSERT INTO Deals (seller, buyer, note, sum, date) VALUES('FirstAcc','SecondAcc','commentFor first deal',1000,'19-вер.-2016');");
+	}
 
-    void addAccountToDB(Account acc) {
-        mDatabase.execSQL(ADD_ACCOUNT_PATTERN
-                .replace("[NAME]", acc.getName())
-                .replace("[DEPOSIT]", Double.toString(acc.getDeposit()))
-                .replace("[DESCR]", acc.getDescription())
-                .replace("[IS_OUTER]", Boolean.toString(acc.isOuter))
-        );
-    }
+	void addAccountToDB(Account acc) {
+		mDatabase.execSQL(ADD_ACCOUNT_PATTERN
+				.replace("[NAME]", acc.getName())
+				.replace("[DEPOSIT]", Double.toString(acc.getDeposit()))
+				.replace("[DESCR]", acc.getDescription())
+				.replace("[IS_OUTER]", Boolean.toString(acc.isOuter))
+		);
+	}
 
-    void addDealToDB(Deal deal) {
-        mDatabase.execSQL(ADD_DEAL_PATTERN.replace("[SELLER]", deal.getSeller().getName())
-                .replace("[BUYER]", deal.getBuyer().getName())
-                .replace("[NOTE]", deal.getNote())
-                .replace("[SUM]", Double.toString(deal.getSum()))
-                .replace("[DATE]", deal.getDate())
-        );
-    }
+	void addDealToDB(Deal deal) {
+		mDatabase.execSQL(ADD_DEAL_PATTERN.replace("[SELLER]", deal.getSeller().getName())
+				.replace("[BUYER]", deal.getBuyer().getName())
+				.replace("[NOTE]", deal.getNote())
+				.replace("[SUM]", Double.toString(deal.getSum()))
+				.replace("[DATE]", Long.toString(deal.getDateLong()))
+		);
+	}
 
-    ArrayList<Account> getAccListFromDB() {
-        Cursor resultSet = mDatabase.rawQuery("SELECT * FROM Accounts", null);//// TODO: 13.05.2017 replace * with fields
-        ArrayList<Account> myAccounts = new ArrayList<>();
-        if (resultSet.moveToFirst()) {
-            do {
-                myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.valueOf(resultSet.getString(3))));
-            } while (resultSet.moveToNext());
-        }
-        resultSet.close();
-        return myAccounts;
-    }
+	ArrayList<Account> getAccListFromDB() {
+		Cursor resultSet = mDatabase.rawQuery("SELECT * FROM Accounts", null);//// TODO: 13.05.2017 replace * with fields
+		ArrayList<Account> myAccounts = new ArrayList<>();
+		if (resultSet.moveToFirst()) {
+			do {
+				myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.valueOf(resultSet.getString(3))));
+			} while (resultSet.moveToNext());
+		}
+		resultSet.close();
+		return myAccounts;
+	}
 
-    ArrayList<Deal> getDealListFromDB() {
-        Cursor resultSet = mDatabase.rawQuery("SELECT * FROM Deals", null);//// TODO: 13.05.2017 replace * with fields
-        ArrayList<Deal> myDeals = new ArrayList<>();
-        if (resultSet.moveToFirst()) {
-            do {
-                myDeals.add(Deal.createDeal(new Account(resultSet.getString(1), true),
-                        new Account(resultSet.getString(0), true), resultSet.getString(2),
-                        Double.valueOf(resultSet.getString(3)), resultSet.getString(4)));//// TODO: 13.05.2017 do smth with all that numbers -_-
-            }
-            while (resultSet.moveToNext());
-        }
-        resultSet.close();
-        return myDeals;
-    }
+	ArrayList<Deal> getDealListFromDB() {
+		Cursor resultSet = mDatabase.rawQuery("SELECT * FROM Deals", null);//// TODO: 13.05.2017 replace * with fields
+		ArrayList<Deal> myDeals = new ArrayList<>();
+		if (resultSet.moveToFirst()) {
+			do {
+				myDeals.add(Deal.createDeal(new Account(resultSet.getString(1), true),
+						new Account(resultSet.getString(0), true), resultSet.getString(2),
+						Double.valueOf(resultSet.getString(3)), resultSet.getLong(4)));//// TODO: 13.05.2017 do smth with all that numbers -_-
+			}
+			while (resultSet.moveToNext());
+		}
+		resultSet.close();
+		return myDeals;
+	}
 
-    void deleteAccFromBD(String nameOfAcc) {
-        mDatabase.execSQL("DELETE FROM Accounts WHERE AccName='" + nameOfAcc + "'");
-        updateDeals(mDatabase);
-    }
+	void deleteAccFromBD(String nameOfAcc) {
+		mDatabase.execSQL("DELETE FROM Accounts WHERE AccName='" + nameOfAcc + "'");
+		updateDeals(mDatabase);
+	}
 
-    void updateAcc(Account acc) {
-        mDatabase.execSQL(UPDATE_ACCOUNT
-                .replace("[DEPOSIT]", Double.toString(acc.getDeposit()))
-                .replace("[DESCR]", acc.getDescription())
-                .replace("[IS_OUTER]", Boolean.toString(acc.isOuter))
-                .replace("[ACC_NAME]",acc.getName())
-        );
-    }
+	void updateAcc(Account acc) {
+		mDatabase.execSQL(UPDATE_ACCOUNT
+				.replace("[DEPOSIT]", Double.toString(acc.getDeposit()))
+				.replace("[DESCR]", acc.getDescription())
+				.replace("[IS_OUTER]", Boolean.toString(acc.isOuter))
+				.replace("[ACC_NAME]", acc.getName())
+		);
+	}
 
-    private void updateDeals(SQLiteDatabase sqLiteDatabase) { //// TODO: 13.05.2017 rewrite this as a query
-        Cursor resultSet = sqLiteDatabase.rawQuery("Select * from Deals", null);
-        ArrayList<Account> accs = getAccListFromDB();
-        if (resultSet.moveToFirst()) {
-            do {
-                if (!(accs.contains(new Account(resultSet.getString(1), false)) || accs.contains(new Account(resultSet.getString(0), false))))
-                    sqLiteDatabase.execSQL("DELETE FROM Deals WHERE id = " + resultSet.getString(5) + ";");
-            } while (resultSet.moveToNext());
-        }
-        resultSet.close();
-    }
+	private void updateDeals(SQLiteDatabase sqLiteDatabase) { //// TODO: 13.05.2017 rewrite this as a query
+		Cursor resultSet = sqLiteDatabase.rawQuery("Select * from Deals", null);
+		ArrayList<Account> accs = getAccListFromDB();
+		if (resultSet.moveToFirst()) {
+			do {
+				if (!(accs.contains(new Account(resultSet.getString(1), false)) || accs.contains(new Account(resultSet.getString(0), false))))
+					sqLiteDatabase.execSQL("DELETE FROM Deals WHERE id = " + resultSet.getString(5) + ";");
+			} while (resultSet.moveToNext());
+		}
+		resultSet.close();
+	}
 
-    ArrayList<DealDTO> getDealsByName(String asRole, String name) {
-        Cursor resultSet = mDatabase.rawQuery("SELECT seller, buyer, date, SUM(sum) FROM Deals  WHERE " + asRole + " ='" + name + "' GROUP BY date;", null);
-        ArrayList<DealDTO> myDeals = new ArrayList<>();
-        if (resultSet.moveToFirst()) {
-            do {
-                myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
-                        resultSet.getString(2), Double.valueOf(resultSet.getString(3))));
-            } while (resultSet.moveToNext());
-        }
-        resultSet.close();
-        return myDeals;
-    }
+	ArrayList<DealDTO> getDealsByName(String asRole, String name) {
+		Cursor resultSet = mDatabase.rawQuery("SELECT seller, buyer, date, SUM(sum) FROM Deals  WHERE " + asRole + " ='" + name + "' GROUP BY date;", null);
+		ArrayList<DealDTO> myDeals = new ArrayList<>();
+		if (resultSet.moveToFirst()) {
+			do {
+				myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
+						resultSet.getLong(2), Double.valueOf(resultSet.getString(3))));
+			} while (resultSet.moveToNext());
+		}
+		resultSet.close();
+		return myDeals;
+	}
 
-    //@formatter:off
+	ArrayList<DealDTO> getDealsByName(String name) {
+		Cursor resultSet = mDatabase.rawQuery(GET_DEAL_FOR_ACC.replace("[name]", name), null);
+		ArrayList<DealDTO> myDeals = new ArrayList<>();
+		if (resultSet.moveToFirst()) {
+			do {
+				myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
+						resultSet.getLong(2), Double.valueOf(resultSet.getString(3)), resultSet.getString(4)));
+			} while (resultSet.moveToNext());
+		}
+		resultSet.close();
+		return myDeals;
+	}
+
+	public boolean checkExistence(String name) {
+		return mDatabase.rawQuery(SELECT_ACCOUNT_WITH_NAME.replace("[name]", name), null).moveToFirst();
+	}
+
+	//@formatter:off
+
+
+	private final String SELECT_ACCOUNT_WITH_NAME = "" +
+			"SELECT 1 " +
+				"FROM " + TABLE_ACCOUNTS_NAME +
+			" WHERE AccName = '[name]'";
+
+	private final String GET_DEAL_FOR_ACC = "" +
+			"SELECT " +
+				"seller, " +
+				"buyer, " +
+				"date, " +
+				"sum," +
+				"note " +
+			"FROM Deals " +
+			"WHERE seller ='[name]' OR buyer ='[name]' ";
 
     private final String ADD_ACCOUNT_PATTERN = "" +
             "INSERT INTO " +
@@ -144,7 +177,7 @@ class DBHelper extends SQLiteOpenHelper {
             "INSERT INTO " +
                 "Deals (seller, buyer, note, sum, date) " +
             "VALUES(" +
-                "'[SELLER]','[BUYER]','[NOTE]',[SUM],'[DATE]'" + //// TODO: 13.05.2017 make date as double not string
+                "'[SELLER]','[BUYER]','[NOTE]',[SUM],[DATE]" + //// TODO: 13.05.2017 make date as double not string
             ")";
 
     private final String TABLE_ACCOUNTS_CREATE = "" +
@@ -161,7 +194,7 @@ class DBHelper extends SQLiteOpenHelper {
                 " buyer VARCHAR, " +
                 " note VARCHAR, " +
                 " sum DOUBLE, " +
-                " date VARCHAR," +
+                " date LONG," +
                 " id INTEGER PRIMARY KEY AUTOINCREMENT" +
             ");";
 

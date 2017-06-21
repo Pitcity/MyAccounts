@@ -76,17 +76,6 @@ public class MainActivity extends AppCompatActivity {
         tabSpec.setIndicator("Stats");
         tabHost.addTab(tabSpec);
         final Button btnCrAcc = (Button) findViewById(R.id.btnCreateAccount);
-        btnCrAcc.post(new Runnable() {
-            @Override
-            public void run() {
-                Rect r = new Rect();
-                btnCrAcc.getHitRect(r);
-                r.bottom += 50;
-                r.left -= 200;
-                r.top = 0;
-                ((View) btnCrAcc.getParent().getParent()).setTouchDelegate(new TouchDelegate(r, btnCrAcc));
-            }
-        });
 
         btnCrAcc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                     if (a.getName().equals(deal1.getSeller().getName()))
                         seller = a;
                 }
-                Deal newDeal1 = Deal.createDeal(buyer, seller, deal1.getNote(), deal1.getSum(), deal1.getDate());
+                Deal newDeal1 = null;//Deal.createDeal(buyer, seller, deal1.getNote(), deal1.getSum(), deal1.getDate());
                 if (newDeal1 == null) {
                     Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
                     return;
@@ -279,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(MainActivity.this, Deals_for_acc.class);
+                            Intent intent = new Intent(MainActivity.this, DealsForAccountActivity.class);
                             intent.putExtra("Name", name.getText().toString());
                             intent.putExtra("Deals", deals);
                             startActivityForResult(intent, 222);
@@ -290,15 +279,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    class DealsListAdapter extends ArrayAdapter<Deal> {
+    private class DealsListAdapter extends ArrayAdapter<Deal> {
+
         public DealsListAdapter() {
-            super(MainActivity.this, R.layout.listview_deals, deals);
+            super(MainActivity.this, R.layout.deal_item, deals);
         }
 
         @Override
         public View getView(int position, View view, ViewGroup parent) {
             if (view == null)
-                view = getLayoutInflater().inflate(R.layout.listview_deals, parent, false);
+                view = getLayoutInflater().inflate(R.layout.deal_item, parent, false);
             Deal currentDeal = deals.get(position);
             TextView date = (TextView) view.findViewById(R.id.viewDeals_Date);
             TextView sum = (TextView) view.findViewById(R.id.viewDeals_sum);

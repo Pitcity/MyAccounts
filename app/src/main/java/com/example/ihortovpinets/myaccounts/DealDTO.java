@@ -1,35 +1,52 @@
 package com.example.ihortovpinets.myaccounts;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by IhorTovpinets on 19.11.2016.
  */
 
 public class DealDTO {
-    String seller;
-    String buyer;
-    String date;
-    double sum;
 
-    DealDTO(String seller, String buyer, String date, double sum) {
-        this.seller = seller;
-        this.buyer = buyer;
-        this.date = date;
-        this.sum = sum;
-    }
+	private String seller;
+	private String buyer;
+	private long date;
+	private String note;
+	private double sum;
 
-    public String getSeller() {
-        return seller;
-    }
+	DealDTO(String seller, String buyer, long date, double sum) {
+		this.seller = seller;
+		this.buyer = buyer;
+		this.date = date;
+		this.sum = sum;
+	}
 
-    public String getBuyer() {
-        return buyer;
-    }
+	DealDTO(String seller, String buyer, long date, double sum, String note) {
+		this.seller = seller;
+		this.buyer = buyer;
+		this.date = date;
+		this.sum = sum;
+		this.note = note;
+	}
 
-    public String getDate() {
-        return date;
-    }
+	public String getSeller() {
+		return seller;
+	}
 
-    public double getSum() {
-        return sum;
-    }
+	public String getBuyer() {
+		return buyer;
+	}
+
+	public String getDate() {
+		return SimpleDateFormat.getDateInstance().format(new Date(date));
+	}
+
+	public double getSum() {
+		return sum;
+	}
+
+	public String getNote() {
+		return note;
+	}
 }

@@ -8,6 +8,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +30,7 @@ import static android.view.View.GONE;
 public class CreateDealActivity extends AppCompatActivity {
 
 	public static final String DEAL_CREATED = "DEAL_CREATED";
-	public static final int CODE_FOR_CREATING_DEAL = 221;
+	public static final int CODE_FOR_CREATING_DEAL = 200;
 
 	ArrayList<Account> mAccounts;
 	Spinner mSpinnerSeller, mSpinnerBuyer;
@@ -39,6 +40,7 @@ public class CreateDealActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_create_deal);
 		mSpinnerSeller = (Spinner) findViewById(R.id.dealSeller);
 		mSpinnerBuyer = (Spinner) findViewById(R.id.dealBuyer);
@@ -54,6 +56,10 @@ public class CreateDealActivity extends AppCompatActivity {
 		mSpinnerBuyer.setAdapter(spinnerAdapter);
 	}
 
+	@Override
+	public View onCreateView(String name, Context context, AttributeSet attrs) {
+		return super.onCreateView(name, context, attrs);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,7 +117,7 @@ public class CreateDealActivity extends AppCompatActivity {
 			double sum = Double.valueOf(mDealSum.getText().toString());
 			String note = mDealDescr.getText().toString();
 
-			Deal newDeal = Deal.createDeal(buyer, seller, note, sum, new java.util.Date().toString()); //// TODO: 30.05.2017 rewrite method
+			Deal newDeal = Deal.createDeal(buyer, seller, note, sum, new java.util.Date().getTime()); //// TODO: 30.05.2017 rewrite method
 			if (newDeal == null) {
 				Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
 				return false;

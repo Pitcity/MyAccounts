@@ -18,6 +18,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.ACCOUNT_ID;
+
 /**
  * Created by itovp on 22.05.2017.
  */
@@ -27,6 +29,7 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 	public static final int ACCOUNTS_FRAGMENT_ID = R.id.accounts_frg_id;
 	private ListView mListView;
 	private AccountsListAdapter mAdapter;
+	private ArrayList<Account> mAccounts;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.create_new_account:
-
+				startActivityForResult(new Intent(getContext(), CreateAccountActivity.class), CreateAccountActivity.CODE_FOR_CREATING_ACCOUNT);
 				break;
 
 			case R.id.add_new_deal:
@@ -75,7 +78,9 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 		View view = inflater.inflate(R.layout.main_page_accounts_tab, null);
 		setHasOptionsMenu(true);
 		mListView = (ListView) view.findViewById(R.id.list_of_accounts);
-		mAdapter = new AccountsListAdapter(new DBHelper(getActivity()).getAccListFromDB());
+		mListView.setOnItemClickListener(this);
+		mAccounts = new DBHelper(getActivity()).getAccListFromDB();
+		mAdapter = new AccountsListAdapter(mAccounts);
 		mListView.setAdapter(mAdapter);
 		mListView.setOnItemClickListener(this);
 
@@ -84,8 +89,9 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		//Intent intent = new Intent(getContext(), DealsFragment.class); // TODO: 24.05.2017 deals frg
-		//intent.putExtra("Name", view.getTag(R.id.account_name_key).toString());
+		Intent intent = new Intent(getContext(), DealsForAccountActivity.class);
+		intent.putExtra(ACCOUNT_ID, mAccounts.get(position).getName());
+		startActivityForResult(intent, DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE);
 	}
 
 	private class AccountsListAdapter extends ArrayAdapter<Account> {

@@ -4,4 +4,6 @@
     <item name="stats_frg_id" type="id"/>
     <item name="account_name_key" type="id"/>
     <item name="save" type="id">Save</item>
+    <item name="code_for_creating_account" type="id"/>
+    <item name="delete_acc_btn" type="id"/>
 </resources>

@@ -12,4 +12,9 @@
     <string name="save">Save</string>
     <string name="another_account">external</string>
     <string name="card_undefined_value">underfind</string>
+    <string name="acc_name_label">Name</string>
+    <string name="acc_deposit_label">Money</string>
+    <string name="acc_description_label">Description</string>
+    <string name="acc_submit_btn_label">Submit</string>
+    <string name="delete_acc_label">delete</string>
 </resources>
