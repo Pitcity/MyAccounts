@@ -58,17 +58,7 @@ public class CreateDealActivity extends AppCompatActivity {
 		mSpinnerSeller.setAdapter(spinnerAdapter);
 		mSpinnerBuyer.setAdapter(spinnerAdapter);
 		if (!TextUtils.isEmpty(mName)) {
-			int indexForSelection = -1;
-			for (Account acc: mAccounts) {
-				indexForSelection++;
-				if (acc.getName().equals(mName)) {
-					break;
-				}
-			}
-			if (indexForSelection >=0 && indexForSelection < mAccounts.size()) {
-				mSpinnerBuyer.setSelection(indexForSelection);
-				mSpinnerSeller.setSelection(indexForSelection);
-			}
+			setSelectionOnSpinners();
 		}
 	}
 
@@ -79,7 +69,7 @@ public class CreateDealActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuItem mi = menu.add(0, R.id.save, 0, getResources().getString(R.string.save));
+		MenuItem mi = menu.add(0, R.id.save, 0, getResources().getString(R.string.create_deal_save));
 		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		mi.setIcon(R.drawable._ic_btn_save_xml);
 		ActionBar actionBar = getSupportActionBar();
@@ -93,7 +83,7 @@ public class CreateDealActivity extends AppCompatActivity {
 		switch (item.getItemId()) {
 			case R.id.save:
 				if (validateDataForDeal()) {
-					Toast.makeText(getApplicationContext(), "Deal Created", Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), getResources().getString(R.string.deal_created), Toast.LENGTH_LONG).show();
 					setResult(CODE_FOR_CREATING_DEAL, new Intent().putExtra(DEAL_CREATED, true));
 					finish();
 				}
@@ -112,21 +102,35 @@ public class CreateDealActivity extends AppCompatActivity {
 				: (Account) sp.getAdapter().getItem(sp.getSelectedItemPosition());
 	}
 
+	public void setSelectionOnSpinners() {
+		int indexForSelection = -1;
+		for (Account acc : mAccounts) {
+			indexForSelection++;
+			if (acc.getName().equals(mName)) {
+				break;
+			}
+		}
+		if (indexForSelection >= 0 && indexForSelection < mAccounts.size()) {
+			mSpinnerBuyer.setSelection(indexForSelection);
+			mSpinnerSeller.setSelection(indexForSelection);
+		}
+	}
+
 	private boolean validateDataForDeal() {
 		Account buyer, seller;
 		if (mSpinnerBuyer.getSelectedItemPosition() == mSpinnerSeller.getSelectedItemPosition()) {
-			Toast.makeText(getApplicationContext(), "Seller and Buyer should be different mAccounts", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), getResources().getString(R.string.impossible_transaction_different_accounts), Toast.LENGTH_LONG).show();
 			return false;
 		} else {
 			seller = getAccFromSpin(mSpinnerSeller, mExternalSeller);
 			buyer = getAccFromSpin(mSpinnerBuyer, mExternalBuyer);
 			if (seller == null || buyer == null) {
-				Toast.makeText(getApplicationContext(), "Point the name for external account", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.impossible_transaction_external_name), Toast.LENGTH_LONG).show();
 				return false;
 			}
 
 			if (TextUtils.isEmpty(mDealSum.getText())) {
-				Toast.makeText(getApplicationContext(), "Enter positive amount for the deal", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.impossible_transaction_positive_money), Toast.LENGTH_LONG).show();
 				return false;
 			}
 			double sum = Double.valueOf(mDealSum.getText().toString());
@@ -134,7 +138,7 @@ public class CreateDealActivity extends AppCompatActivity {
 
 			Deal newDeal = Deal.createDeal(buyer, seller, note, sum, new java.util.Date().getTime()); //// TODO: 30.05.2017 rewrite method
 			if (newDeal == null) {
-				Toast.makeText(getApplicationContext(), "Impossible transaction (not enough money)", Toast.LENGTH_LONG).show();
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.impossible_transaction_not_enough_money), Toast.LENGTH_LONG).show();
 				return false;
 			} else {
 				DBHelper db = new DBHelper(getApplicationContext());
@@ -185,7 +189,7 @@ public class CreateDealActivity extends AppCompatActivity {
 			@Override
 			public Object getItem(int position) {
 				if (position > mAccounts.size() - 1) {
-					return new Account(getResources().getString(R.string.another_account), true);
+					return new Account(getResources().getString(R.string.create_deal_external_acc), true);
 				} else
 					return mAccounts.get(position);
 			}

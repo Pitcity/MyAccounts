@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/edit_text_style"
-                android:hint="@string/sum"
+                android:hint="@string/create_deal_sum"
                 android:inputType="numberDecimal"
                 android:maxLength="10"
                 android:paddingLeft="@dimen/min_padding"/>

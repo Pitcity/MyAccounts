@@ -76,7 +76,7 @@ public class AccountSelectionCard extends RelativeLayout {
 			@Override
 			public Object getItem(int position) {
 				if (position > mAccounts.size() - 1) {
-					return new Account(getResources().getString(R.string.another_account), true);
+					return new Account(getResources().getString(R.string.create_deal_external_acc), true);
 				} else
 					return mAccounts.get(position);
 			}

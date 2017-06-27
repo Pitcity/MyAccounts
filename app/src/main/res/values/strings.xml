@@ -1,20 +1,30 @@
 <resources>
     <string name="app_name">MyAccounts</string>
-    <string name="stats_frg_name">Stats</string>
+
     <string name="account_frg_name">Accounts</string>
     <string name="accounts">Accounts</string>
     <string name="create_new_account">New account</string>
-    <string name="add_new_deal">New deal</string>
-    <string name="short_mark_for_seller">S:</string>
-    <string name="short_mark_for_buyer">B:</string>
-    <string name="create_deal_descr">Description</string>
-    <string name="sum">Sum</string>
-    <string name="save">Save</string>
-    <string name="another_account">external</string>
-    <string name="card_undefined_value">underfind</string>
+
     <string name="acc_name_label">Name</string>
     <string name="acc_deposit_label">Money</string>
     <string name="acc_description_label">Description</string>
     <string name="acc_submit_btn_label">Submit</string>
+
+    <string name="stats_frg_name">Stats</string>
+
+    <string name="add_new_deal">New deal</string>
+    <string name="short_mark_for_seller">S:</string>
+    <string name="short_mark_for_buyer">B:</string>
+    <string name="create_deal_descr">Description</string>
+    <string name="create_deal_sum">Sum</string>
+    <string name="create_deal_save">Save</string>
+    <string name="create_deal_external_acc">external</string>
+    <string name="card_undefined_value">undefined</string>
+    <string name="deal_created">Deal created</string>
     <string name="delete_acc_label">delete</string>
+
+    <string name="impossible_transaction_not_enough_money">Impossible transaction (not enough money)</string>
+    <string name="impossible_transaction_different_accounts">Seller and Buyer should be different Accounts</string>
+    <string name="impossible_transaction_external_name">Point the name for external account</string>
+    <string name="impossible_transaction_positive_money">Enter positive amount for the deal</string>
 </resources>
