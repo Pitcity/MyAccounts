@@ -7,7 +7,10 @@
         android:id="@+id/account_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/base_padding"
+        android:layout_marginTop="@dimen/padding"
+        android:layout_marginBottom="@dimen/padding"
+        android:layout_marginLeft="@dimen/base_padding"
+        android:layout_marginRight="@dimen/base_padding"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="30sp"/>
 

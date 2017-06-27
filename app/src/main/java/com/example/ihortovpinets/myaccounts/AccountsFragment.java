@@ -1,6 +1,5 @@
 package com.example.ihortovpinets.myaccounts;
 
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,7 +28,6 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 	public static final int ACCOUNTS_FRAGMENT_ID = R.id.accounts_frg_id;
 	private ListView mListView;
 	private AccountsListAdapter mAdapter;
-	private ArrayList<Account> mAccounts;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,13 +44,28 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
-			switch (requestCode) {
+			if ((requestCode == CreateDealActivity.CODE_FOR_CREATING_DEAL && data.getBooleanExtra(CreateDealActivity.DEAL_CREATED, false))
+					|| (resultCode == DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE && data.getBooleanExtra(DealsForAccountActivity.IS_ACC_DELETED, false))
+					|| (resultCode == CreateAccountActivity.CODE_FOR_CREATING_ACCOUNT && data.getBooleanExtra(CreateAccountActivity.IS_ACC_CREATED, false))) {
+				mAdapter.notifyDataSetChanged();
+			}
+			/*switch (requestCode) {
 				case CreateDealActivity.CODE_FOR_CREATING_DEAL:
 					if (data.getBooleanExtra(CreateDealActivity.DEAL_CREATED, false)) {
 						mAdapter.notifyDataSetChanged();
 					}
 					break;
-			}
+				case DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE:
+					if (data.getBooleanExtra(DealsForAccountActivity.IS_ACC_DELETED, false)) {
+						mAdapter.notifyDataSetChanged();
+					}
+					break;
+				case CreateAccountActivity.CODE_FOR_CREATING_ACCOUNT:
+					if (data.getBooleanExtra(CreateAccountActivity.IS_ACC_CREATED, false)) {
+						mAdapter.notifyDataSetChanged();
+					}
+					break;
+			}*/
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -79,10 +92,8 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 		setHasOptionsMenu(true);
 		mListView = (ListView) view.findViewById(R.id.list_of_accounts);
 		mListView.setOnItemClickListener(this);
-		mAccounts = new DBHelper(getActivity()).getAccListFromDB();
-		mAdapter = new AccountsListAdapter(mAccounts);
+		mAdapter = new AccountsListAdapter(new DBHelper(getActivity()).getAccListFromDB());
 		mListView.setAdapter(mAdapter);
-		mListView.setOnItemClickListener(this);
 
 		return view;
 	}
@@ -90,7 +101,7 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Intent intent = new Intent(getContext(), DealsForAccountActivity.class);
-		intent.putExtra(ACCOUNT_ID, mAccounts.get(position).getName());
+		intent.putExtra(ACCOUNT_ID, mAdapter.getItem(position).getName());
 		startActivityForResult(intent, DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE);
 	}
 
@@ -101,6 +112,17 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 		AccountsListAdapter(ArrayList<Account> myAccounts) {
 			super(getActivity(), R.layout.account_item_row, myAccounts);
 			this.myAccounts = myAccounts;
+		}
+
+		@Override
+		public int getCount() {
+			return myAccounts.size();
+		}
+
+		@Nullable
+		@Override
+		public Account getItem(int position) {
+			return myAccounts.get(position);
 		}
 
 		@Override

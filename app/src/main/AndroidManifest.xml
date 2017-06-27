@@ -15,7 +15,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".DealsForAccountActivity">
+        <activity
+            android:name=".DealsForAccountActivity"
+            android:parentActivityName=".MainPageActivity">
             <!--android:label="@string/about_title">-->
         </activity>
         <activity

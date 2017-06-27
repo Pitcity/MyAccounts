@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import static android.view.View.GONE;
+import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.ACCOUNT_ID;
 
 /**
  * Created by IhorTovpinets on 15.09.2016.
@@ -33,6 +34,7 @@ public class CreateDealActivity extends AppCompatActivity {
 	public static final int CODE_FOR_CREATING_DEAL = 200;
 
 	ArrayList<Account> mAccounts;
+	String mName;
 	Spinner mSpinnerSeller, mSpinnerBuyer;
 	EditText mExternalSeller, mExternalBuyer, mDealSum, mDealDescr;
 	private TextView mBuyerDeposit, mSellerDeposit;
@@ -41,6 +43,7 @@ public class CreateDealActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		mName = getIntent().getStringExtra(ACCOUNT_ID);
 		setContentView(R.layout.activity_create_deal);
 		mSpinnerSeller = (Spinner) findViewById(R.id.dealSeller);
 		mSpinnerBuyer = (Spinner) findViewById(R.id.dealBuyer);
@@ -54,6 +57,19 @@ public class CreateDealActivity extends AppCompatActivity {
 		mAccounts = new DBHelper(this).getAccListFromDB();
 		mSpinnerSeller.setAdapter(spinnerAdapter);
 		mSpinnerBuyer.setAdapter(spinnerAdapter);
+		if (!TextUtils.isEmpty(mName)) {
+			int indexForSelection = -1;
+			for (Account acc: mAccounts) {
+				indexForSelection++;
+				if (acc.getName().equals(mName)) {
+					break;
+				}
+			}
+			if (indexForSelection >=0 && indexForSelection < mAccounts.size()) {
+				mSpinnerBuyer.setSelection(indexForSelection);
+				mSpinnerSeller.setSelection(indexForSelection);
+			}
+		}
 	}
 
 	@Override
@@ -83,7 +99,6 @@ public class CreateDealActivity extends AppCompatActivity {
 				}
 				break;
 			case android.R.id.home:
-				setResult(CODE_FOR_CREATING_DEAL, new Intent().putExtra(DEAL_CREATED, false));
 				NavUtils.navigateUpFromSameTask(this);
 		}
 		return super.onOptionsItemSelected(item);

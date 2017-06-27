@@ -3,7 +3,9 @@ package com.example.ihortovpinets.myaccounts;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,25 +32,36 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setTitle(name);
 		MenuItem mi = menu.add(0, R.id.delete_acc_btn, 0, R.string.delete_acc_label);
 		mi.setIcon(R.drawable._ic_btn_delete_normal);
 		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+		mi = menu.add(0, R.id.add_new_deal, 0, getResources().getString(R.string.add_new_deal));
+		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		mi.setIcon(R.drawable.add_deal);
+
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.delete_acc_btn) {
-			DBHelper dbh = new DBHelper(getApplicationContext());
-			dbh.deleteAccFromBD(name);
-			Intent resultIntent = new Intent();
-			resultIntent.putExtra(IS_ACC_DELETED, name);
-			setResult(DEALS_FORR_ACC_ACTIVITY_CODE, resultIntent);
-			DealsForAccountActivity.super.finish();
-		} else {
-			onBackPressed();
+		switch (item.getItemId()) {
+			case R.id.delete_acc_btn:
+				DBHelper dbh = new DBHelper(getApplicationContext());
+				dbh.deleteAccFromBD(name);
+				setResult(DEALS_FORR_ACC_ACTIVITY_CODE, new Intent().putExtra(IS_ACC_DELETED, true));
+				finish();
+				break;
+			case R.id.add_new_deal:
+				Intent intent = new Intent(getApplicationContext(), CreateDealActivity.class);
+				intent.putExtra(ACCOUNT_ID, name);
+				startActivityForResult(intent, CreateDealActivity.CODE_FOR_CREATING_DEAL);
+				break;
+			default:
+				onBackPressed();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -59,6 +72,9 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 		setContentView(R.layout.deals_for_acc);
 		dealsListView = (ListView) findViewById(R.id.listForDeals);
 		name = getIntent().getStringExtra(ACCOUNT_ID);
+		if (TextUtils.isEmpty(name)) {
+			name = "";
+		}
 		filteredDeals = new DBHelper(this).getDealsByName(name);
 		populateListofDeals();
 	}
