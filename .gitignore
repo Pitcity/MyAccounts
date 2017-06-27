@@ -54,6 +54,8 @@ captures/
 .idea/dictionaries
 .idea/libraries
 
+drawable/
+
 # Keystore files
 *.jks
 
