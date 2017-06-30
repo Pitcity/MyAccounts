@@ -1,9 +1,13 @@
 package com.example.ihortovpinets.myaccounts;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +22,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.ACCOUNT_ID;
+import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.NEED_TO_UPDATE;
 
 /**
  * Created by itovp on 22.05.2017.
@@ -29,9 +34,28 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 	private ListView mListView;
 	private AccountsListAdapter mAdapter;
 
+	public class UpdateReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getBooleanExtra(NEED_TO_UPDATE, false)) {
+				mAdapter.notifyDataSetChanged();
+			}
+		}
+	}
+
+	@Override
+	public void onResume() {
+		if (mAdapter != null) {
+			mAdapter.notifyDataSetChanged();
+		}
+		super.onResume();
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		LocalBroadcastManager.getInstance(getActivity().getApplicationContext()).registerReceiver(new UpdateReceiver(), new IntentFilter("data-loaded"));
 		setHasOptionsMenu(true);
 	}
 
@@ -45,7 +69,7 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (data != null) {
 			if ((requestCode == CreateDealActivity.CODE_FOR_CREATING_DEAL && data.getBooleanExtra(CreateDealActivity.DEAL_CREATED, false))
-					|| (resultCode == DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE && data.getBooleanExtra(DealsForAccountActivity.IS_ACC_DELETED, false))
+					|| (resultCode == DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE && data.getBooleanExtra(DealsForAccountActivity.NEED_TO_UPDATE, false))
 					|| (resultCode == CreateAccountActivity.CODE_FOR_CREATING_ACCOUNT && data.getBooleanExtra(CreateAccountActivity.IS_ACC_CREATED, false))) {
 				mAdapter.notifyDataSetChanged();
 			}
@@ -56,7 +80,7 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 					}
 					break;
 				case DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE:
-					if (data.getBooleanExtra(DealsForAccountActivity.IS_ACC_DELETED, false)) {
+					if (data.getBooleanExtra(DealsForAccountActivity.NEED_TO_UPDATE, false)) {
 						mAdapter.notifyDataSetChanged();
 					}
 					break;

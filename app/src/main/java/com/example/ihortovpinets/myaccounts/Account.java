@@ -7,6 +7,7 @@ import java.io.Serializable;
  */
 
 public class Account implements Serializable {
+	private int accId;
 	private String name;
 	private double deposit;
 	private String description;
@@ -17,6 +18,14 @@ public class Account implements Serializable {
 		this.deposit = 0;
 		this.isOuter = flag;
 		this.description = "";
+	}
+
+	public Account(String name, double deposit, String description, boolean flag, int accId) {
+		this.name = name;
+		this.deposit = deposit;
+		this.isOuter = flag;
+		this.description = description;
+		this.accId = accId;
 	}
 
 	public Account(String name, double deposit, String description, boolean flag) {
@@ -49,8 +58,9 @@ public class Account implements Serializable {
 		} else return true;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		Account account = (Account) o;
-		return this.getName().equals(account.getName());
+		return this.getName().equals(account.getName()) || account.accId == this.accId;
 	}
 }

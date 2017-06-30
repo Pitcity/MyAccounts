@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 class DBHelper extends SQLiteOpenHelper {
 
-	private final static int DB_VER = 2;
+	private final static int DB_VER = 5; //5 for testing, 2 for state version
 
 	private final static String DB_NAME = "MyAccounts.db";
 	private final static String TABLE_ACCOUNTS_NAME = "Accounts";
@@ -35,15 +35,19 @@ class DBHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+		//sqLiteDatabase.execSQL(ALTER_TABLE1.replace("[table_name]", TABLE_DEALS_NAME));
+		//sqLiteDatabase.execSQL(TABLE_DEALS_CREATE);
+		//sqLiteDatabase.execSQL(INSERT_INTO.replace("[table_name]", TABLE_DEALS_NAME));
+		//sqLiteDatabase.execSQL(DROP);
 		sqLiteDatabase.execSQL(TABLE_ACCOUNTS_DROP);
 		sqLiteDatabase.execSQL(TABLE_DEALS_DROP);
 		onCreate(sqLiteDatabase);
 	}
 
 	private void fillDb(SQLiteDatabase sqLiteDatabase) {
-		sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('FirstAcc',2000,'lalala','false');");
-		sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('SecondAcc',7000,'lalala','false');");
-		sqLiteDatabase.execSQL("INSERT INTO Accounts VALUES('ThirdAcc',5000,'lalala','false');");
+		sqLiteDatabase.execSQL("INSERT INTO Accounts(AccName, deposit, description, isOuter) VALUES('FirstAcc',2000,'lalala','false');");
+		sqLiteDatabase.execSQL("INSERT INTO Accounts(AccName, deposit, description, isOuter) VALUES('SecondAcc',7000,'lalala','false');");
+		sqLiteDatabase.execSQL("INSERT INTO Accounts(AccName, deposit, description, isOuter) VALUES('ThirdAcc',5000,'lalala','false');");
 		sqLiteDatabase.execSQL("INSERT INTO Deals (seller, buyer, note, sum, date) VALUES('FirstAcc','SecondAcc','commentFor first deal',1000,'19-вер.-2016');");
 	}
 
@@ -70,7 +74,7 @@ class DBHelper extends SQLiteOpenHelper {
 		ArrayList<Account> myAccounts = new ArrayList<>();
 		if (resultSet.moveToFirst()) {
 			do {
-				myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.valueOf(resultSet.getString(3))));
+				myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.valueOf(resultSet.getString(3)), resultSet.getInt(4)));
 			} while (resultSet.moveToNext());
 		}
 		resultSet.close();
@@ -118,13 +122,13 @@ class DBHelper extends SQLiteOpenHelper {
 		resultSet.close();
 	}
 
-	ArrayList<DealDTO> getDealsByName(String asRole, String name) {
+	ArrayList<DealDTO> getDealsByName(String asRole, String name) { //// TODO: 30.06.2017 for future ststas
 		Cursor resultSet = mDatabase.rawQuery("SELECT seller, buyer, date, SUM(sum) FROM Deals  WHERE " + asRole + " ='" + name + "' GROUP BY date;", null);
 		ArrayList<DealDTO> myDeals = new ArrayList<>();
 		if (resultSet.moveToFirst()) {
 			do {
 				myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
-						resultSet.getLong(2), Double.valueOf(resultSet.getString(3))));
+						resultSet.getLong(2), Double.valueOf(resultSet.getString(3)), resultSet.getInt(5)));
 			} while (resultSet.moveToNext());
 		}
 		resultSet.close();
@@ -137,7 +141,7 @@ class DBHelper extends SQLiteOpenHelper {
 		if (resultSet.moveToFirst()) {
 			do {
 				myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
-						resultSet.getLong(2), Double.valueOf(resultSet.getString(3)), resultSet.getString(4)));
+						resultSet.getLong(2), Double.valueOf(resultSet.getString(3)), resultSet.getString(4), resultSet.getInt(5)));
 			} while (resultSet.moveToNext());
 		}
 		resultSet.close();
@@ -150,6 +154,16 @@ class DBHelper extends SQLiteOpenHelper {
 
 	//@formatter:off
 
+	private final String RENAME_TO_TMP = "" +
+			"ALTER TABLE [table_name] " +
+			" RENAME TO TMP";
+
+	private final String TRANPHER_DATA = "" +
+			"INSERT INTO [table_name] (seller, buyer, note, sum)" +
+			" SELECT seller, buyer, note, sum FROM TMP ";
+
+	private final String DROP_TMP = "" +
+			"DROP TABLE TMP";
 
 	private final String SELECT_ACCOUNT_WITH_NAME = "" +
 			"SELECT 1 " +
@@ -162,9 +176,11 @@ class DBHelper extends SQLiteOpenHelper {
 				"buyer, " +
 				"date, " +
 				"sum," +
-				"note " +
+				"note," +
+				"id " +
 			"FROM Deals " +
-			"WHERE seller ='[name]' OR buyer ='[name]' ";
+			"WHERE seller ='[name]' OR buyer ='[name]' " +
+			"ORDER BY date ";
 
     private final String ADD_ACCOUNT_PATTERN = "" +
             "INSERT INTO " +
@@ -182,15 +198,16 @@ class DBHelper extends SQLiteOpenHelper {
 
     private final String TABLE_ACCOUNTS_CREATE = "" +
             "CREATE TABLE IF NOT EXISTS " + TABLE_ACCOUNTS_NAME + "(" +
-                "AccName VARCHAR PRIMARY KEY, " +
+                "AccName VARCHAR, " +
                 "deposit DOUBLE, " +
                 "description VARCHAR," +
-                "isOuter BOOLEAN" +
+                "isOuter BOOLEAN, " +
+				"AccountId INTEGER PRIMARY KEY AUTOINCREMENT" +
             ");";
 
     private final String TABLE_DEALS_CREATE = "" +
             "CREATE TABLE IF NOT EXISTS " + TABLE_DEALS_NAME + "(" +
-                " seller VARCHAR, " +
+                " seller VARCHAR, " +//// TODO: 30.06.2017 id of accs
                 " buyer VARCHAR, " +
                 " note VARCHAR, " +
                 " sum DOUBLE, " +

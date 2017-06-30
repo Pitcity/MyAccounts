@@ -3,6 +3,8 @@ package com.example.ihortovpinets.myaccounts;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -26,7 +28,7 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 	ListView dealsListView;
 	String name;
 	public static final String ACCOUNT_ID = "ACCOUNT_ID";
-	public static final String IS_ACC_DELETED = "IS_ACC_DELETED";
+	public static final String NEED_TO_UPDATE = "NEED_TO_UPDATE";
 	public static final int DEALS_FORR_ACC_ACTIVITY_CODE = 202;
 	private DealsListAdapter mAdapter;
 
@@ -47,12 +49,25 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 	}
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (data != null) {
+			if (requestCode == CreateDealActivity.CODE_FOR_CREATING_DEAL && data.getBooleanExtra(CreateDealActivity.DEAL_CREATED, false)) {
+				mAdapter.notifyDataSetChanged();
+				Intent intent = new Intent();
+				intent.putExtra(NEED_TO_UPDATE, true);
+				LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.delete_acc_btn:
 				DBHelper dbh = new DBHelper(getApplicationContext());
 				dbh.deleteAccFromBD(name);
-				setResult(DEALS_FORR_ACC_ACTIVITY_CODE, new Intent().putExtra(IS_ACC_DELETED, true));
+				setResult(DEALS_FORR_ACC_ACTIVITY_CODE, new Intent().putExtra(NEED_TO_UPDATE, true));
 				finish();
 				break;
 			case R.id.add_new_deal:
@@ -88,6 +103,23 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 
 		DealsListAdapter() {
 			super(DealsForAccountActivity.this, R.layout.deal_item, filteredDeals);
+		}
+
+		@Override
+		public void notifyDataSetChanged() {
+			filteredDeals = new DBHelper(getContext()).getDealsByName(name);
+			super.notifyDataSetChanged();
+		}
+
+		@Override
+		public int getCount() {
+			return filteredDeals.size();
+		}
+
+		@Nullable
+		@Override
+		public DealDTO getItem(int position) {
+			return filteredDeals.get(position);
 		}
 
 		@Override

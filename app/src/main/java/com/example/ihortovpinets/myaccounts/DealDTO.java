@@ -14,20 +14,23 @@ public class DealDTO {
 	private long date;
 	private String note;
 	private double sum;
+	private int id;
 
-	DealDTO(String seller, String buyer, long date, double sum) {
+	DealDTO(String seller, String buyer, long date, double sum, int id) {
 		this.seller = seller;
 		this.buyer = buyer;
 		this.date = date;
 		this.sum = sum;
+		this.id = id;
 	}
 
-	DealDTO(String seller, String buyer, long date, double sum, String note) {
+	DealDTO(String seller, String buyer, long date, double sum, String note, int id) {
 		this.seller = seller;
 		this.buyer = buyer;
 		this.date = date;
 		this.sum = sum;
 		this.note = note;
+		this.id = id;
 	}
 
 	public String getSeller() {
