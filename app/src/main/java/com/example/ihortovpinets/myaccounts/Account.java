@@ -1,9 +1,6 @@
 package com.example.ihortovpinets.myaccounts;
 
-import android.support.annotation.NonNull;
-
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Created by IhorTovpinets on 25.08.2016.
@@ -67,16 +64,28 @@ public class Account implements Serializable {
         return description;
     }
 
-    public boolean depositIsChanged(double ammount) {
-        if (!isOuter) {
-            if (-ammount > this.deposit)
-                return false;
-            else {
-                this.deposit = this.deposit + ammount;
-                return true;
-            }
-        } else return true;
-    }
+	public boolean performAccrual(double amount) {
+		if (!isOuter) {
+			this.deposit = this.deposit + amount;
+		}
+		return true;
+	}
+
+	public boolean performWithdrawal(double amount) {
+		boolean operationResult;
+		if (!isOuter) {
+			if (this.deposit - amount < 0) {
+				operationResult = false;
+			}
+			else {
+				this.deposit = this.deposit - amount;
+				operationResult = true;
+			}
+		} else {
+			operationResult = true;
+		}
+		return operationResult;
+	}
 
     public boolean equals(Object o) {
         Account account = (Account) o;
