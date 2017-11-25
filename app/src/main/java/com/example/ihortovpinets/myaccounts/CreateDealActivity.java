@@ -71,7 +71,7 @@ public class CreateDealActivity extends AppCompatActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuItem mi = menu.add(0, R.id.save, 0, getResources().getString(R.string.create_deal_save));
 		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		mi.setIcon(R.drawable._ic_btn_save_xml);
+		//mi.setIcon(R.drawable._ic_btn_save_xml);
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -168,7 +168,7 @@ public class CreateDealActivity extends AppCompatActivity {
 				TextView accountDeposit = (TextView) convertView.findViewById(R.id.dropdown_acc_deposit);
 				Account currentAcc = (Account) getItem(position);
 				accountName.setText(currentAcc.getName());
-				accountDeposit.setText(currentAcc.isOuter ? getResources().getString(R.string.card_undefined_value) : Double.toString(currentAcc.getDeposit()));
+				accountDeposit.setText(currentAcc.isOuter() ? getResources().getString(R.string.card_undefined_value) : Double.toString(currentAcc.getDeposit()));
 				return convertView;
 			}
 

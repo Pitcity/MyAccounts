@@ -31,6 +31,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <LinearLayout
+                    android:id="@+id/tabCreator"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="Create new account" />
+
+                    <EditText
+                        android:id="@+id/txtName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Name"
+                        android:inputType="text" />
+
+                    <EditText
+                        android:id="@+id/txtMoney"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="Money"
+                        android:inputType="numberDecimal" />
+
+                    <EditText
+                        android:id="@+id/txtDescr"
+                        android:layout_width="match_parent"
+                        android:layout_height="40pt"
+                        android:hint="Description" />
+
+                    <Button
+                        android:id="@+id/btnCreateAccount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:enabled="false"
+                        android:text="Submit"
+                        android:textSize="8pt" />
+                </LinearLayout>
+
                 <ScrollView
                     android:id="@+id/tabDealler"
                     android:layout_width="match_parent"
@@ -82,50 +126,6 @@
                             android:layout_height="300dp" />
                     </LinearLayout>
                 </ScrollView>
-
-                <LinearLayout
-                    android:id="@+id/tabCreator"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="Create new account" />
-
-                    <EditText
-                        android:id="@+id/txtName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Name"
-                        android:inputType="text" />
-
-                    <EditText
-                        android:id="@+id/txtMoney"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="Money"
-                        android:inputType="numberDecimal" />
-
-                    <EditText
-                        android:id="@+id/txtDescr"
-                        android:layout_width="match_parent"
-                        android:layout_height="40pt"
-                        android:hint="Description" />
-
-                    <Button
-                        android:id="@+id/btnCreateAccount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:enabled="false"
-                        android:text="Submit"
-                        android:textSize="8pt" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tabStoreList"

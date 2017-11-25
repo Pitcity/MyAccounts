@@ -3,12 +3,13 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/create_new_account"
-        android:icon="@drawable/create_account"
         android:title="@string/create_new_account"
         app:showAsAction="always"/>
+
+    <!--android:icon="@drawable/create_account"-->
     <item
         android:id="@+id/add_new_deal"
-        android:icon="@drawable/add_deal"
         android:title="@string/add_new_deal"
         app:showAsAction="always"/>
+    <!--android:icon="@drawable/add_deal"-->
 </menu>
