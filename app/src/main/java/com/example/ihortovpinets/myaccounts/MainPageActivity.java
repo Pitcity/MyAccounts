@@ -1,5 +1,6 @@
 package com.example.ihortovpinets.myaccounts;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 
@@ -28,6 +31,20 @@ public class MainPageActivity extends AppCompatActivity {
 
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(new TabPagerAdapter(getSupportFragmentManager()));
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, 0, 0, "TryIt");
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == 0) {
+			startActivity(new Intent(getApplicationContext(),TryItActivity.class));
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	private class TabPagerAdapter extends FragmentPagerAdapter {

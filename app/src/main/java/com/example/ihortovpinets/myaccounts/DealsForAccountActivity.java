@@ -37,7 +37,6 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 		MenuItem mi = menu.add(0, R.id.delete_acc_btn, 0, R.string.delete_acc_label);
 		//mi.setIcon(R.drawable._ic_btn_delete_normal);
 		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
 		mi = menu.add(0, R.id.add_new_deal, 0, getResources().getString(R.string.add_new_deal));
 		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 		//mi.setIcon(R.drawable.add_deal);
@@ -147,4 +146,42 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 			return view;
 		}
 	}
+/*
+	void prefs() {
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putInt(getString(R.string.saved_high_score), newHighScore);
+		editor.commit();
+
+		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		int defaultValue = getResources().getInteger(R.string.saved_high_score_default);
+		long highScore = sharedPref.getInt(getString(R.string.saved_high_score), defaultValue);
+
+	}
+
+	void file() {
+		String filename = "myfile";
+		String string = "Hello world!";
+		FileOutputStream outputStream;
+
+		try {
+			outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+			outputStream.write(string.getBytes());
+			outputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		public File getTempFile(Context context, String url) {
+			File file;
+			File file = new File(context.getFilesDir(), filename);
+			try {
+				String fileName = Uri.parse(url).getLastPathSegment();
+				file = File.createTempFile(fileName, null, context.getCacheDir());
+			} catch (IOException e) {
+				// Error while creating file
+			}
+			return file;
+		}
+	}*/
 }
