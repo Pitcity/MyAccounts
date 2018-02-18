@@ -1,5 +1,7 @@
 package com.example.ihortovpinets.myaccounts;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -37,7 +39,13 @@ public class Account implements Serializable {
         this.description = description;
         this.accountId = UUID.randomUUID().toString();
     }
-
+    public Account(String accountId, String name, double deposit, String description, boolean flag) {
+        this.name = name;
+        this.deposit = deposit;
+        this.isOuter = flag;
+        this.description = description;
+        this.accountId = accountId;
+    }
     public String getName() {
         return name;
     }
@@ -46,6 +54,7 @@ public class Account implements Serializable {
         return isOuter;
     }
 
+    @NonNull
     public String getAccountId() {
         return accountId;
     }

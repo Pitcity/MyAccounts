@@ -23,7 +23,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import static android.view.View.GONE;
-import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.ACCOUNT_ID;
 
 /**
  * Created by IhorTovpinets on 15.09.2016.
@@ -32,6 +31,7 @@ public class CreateDealActivity extends AppCompatActivity {
 
 	public static final String DEAL_CREATED = "DEAL_CREATED";
 	public static final int CODE_FOR_CREATING_DEAL = 200;
+	public static final String ACCOUNT_ID = "acc_id";
 
 	ArrayList<Account> mAccounts;
 	String mName;

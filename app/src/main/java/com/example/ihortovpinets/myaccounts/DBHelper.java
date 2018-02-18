@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 class DBHelper extends SQLiteOpenHelper {
 
-    final static int DB_VER = 1;
+    final static int DB_VER = 2;
 
     private final static String DB_NAME = "MyAccounts.db";
     private final static String TABLE_ACCOUNTS_NAME = "tblAccounts";
@@ -43,23 +43,23 @@ class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_ACCOUNTS_NAME));
         sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_DEALS_NAME));
-        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_COMPONENT_CATEGORIES_CREATE));
-        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_COMPONENT_TYPES_CREATE));
-        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_DEALS_COMPONENT_CREATE));
-        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_PRODUCTION_CREATE));
-        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_QUANTITY_TYPES_CREATE));
+        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_COMP_CAT_NAME));
+        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_COMP_TYPES_NAME));
+        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_DEALS_COMPONENTS_NAME));
+        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_PRODUCTION_NAME));
+        sqLiteDatabase.execSQL(TABLE_DROP.replace("[table_name]", TABLE_QUANT_TYPES_NAME));
         onCreate(sqLiteDatabase);
     }
 
 
     private void fillDb(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_ACCOUNTS_NAME + " VALUES('FirstAcc',2000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_ACCOUNTS_NAME + " VALUES('SecondAcc',7000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_ACCOUNTS_NAME + " VALUES('ThirdAcc',5000,'lalala','false');");
-        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_DEALS_NAME + " (seller, buyer, note, sum, date) VALUES('FirstAcc','SecondAcc','commentFor first deal',1000,'19-вер.-2016');");
+//        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_ACCOUNTS_NAME + " VALUES('FirstAcc',2000,'lalala','false');");
+//        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_ACCOUNTS_NAME + " VALUES('SecondAcc',7000,'lalala','false');");
+//        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_ACCOUNTS_NAME + " VALUES('ThirdAcc',5000,'lalala','false');");
+//        sqLiteDatabase.execSQL("INSERT INTO " + TABLE_DEALS_NAME + " (seller, buyer, note, sum, date) VALUES('FirstAcc','SecondAcc','commentFor first deal',1000,'19-вер.-2016');");
     }
 
-    void addAccountToDB(Account acc) {
+    void addAccountToDB(Account acc) { //valid
         mDatabase.execSQL(ADD_ACCOUNT_PATTERN
                 .replace("[accountId]", acc.getAccountId())
                 .replace("[NAME]", acc.getName())
@@ -83,7 +83,8 @@ class DBHelper extends SQLiteOpenHelper {
         ArrayList<Account> myAccounts = new ArrayList<>();
         if (resultSet.moveToFirst()) {
             do {
-                myAccounts.add(new Account(resultSet.getString(0), Double.valueOf(resultSet.getString(1)), resultSet.getString(2), Boolean.valueOf(resultSet.getString(3))));
+                myAccounts.add(new Account(resultSet.getString(0), resultSet.getString(1),
+                        Double.valueOf(resultSet.getString(2)), resultSet.getString(2), Boolean.valueOf(resultSet.getString(3))));
             } while (resultSet.moveToNext());
         }
         resultSet.close();
@@ -97,7 +98,7 @@ class DBHelper extends SQLiteOpenHelper {
             do {
                 myDeals.add(Deal.createDeal(new Account(resultSet.getString(1), true),
                         new Account(resultSet.getString(0), true), resultSet.getString(2),
-                        Double.valueOf(resultSet.getString(3)), resultSet.getString(4)));//// TODO: 13.05.2017 do smth with all that numbers -_-
+                        Double.valueOf(resultSet.getString(3)), resultSet.getLong(4)));//// TODO: 13.05.2017 do smth with all that numbers -_-
             }
             while (resultSet.moveToNext());
         }
@@ -143,8 +144,8 @@ class DBHelper extends SQLiteOpenHelper {
         ArrayList<DealDTO> myDeals = new ArrayList<>();
         if (resultSet.moveToFirst()) {
             do {
-                myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
-                        resultSet.getString(2), Double.valueOf(resultSet.getString(3))));
+                //myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
+                  //      resultSet.getString(2), Double.valueOf(resultSet.getString(3))));
             } while (resultSet.moveToNext());
         }
         resultSet.close();
@@ -164,7 +165,7 @@ class DBHelper extends SQLiteOpenHelper {
 		return myDeals;
 	}
 
-	public boolean checkExistence(String name) {
+	public boolean isAccoutWithNameExists(String name) { //valid
 		return mDatabase.rawQuery(SELECT_ACCOUNT_WITH_NAME.replace("[name]", name), null).moveToFirst();
 	}
 
@@ -198,7 +199,7 @@ class DBHelper extends SQLiteOpenHelper {
 				"sum," +
 				"note," +
 				"id " +
-			"FROM Deals " +
+			"FROM " + TABLE_DEALS_NAME + " " +
 			"WHERE seller ='[name]' OR buyer ='[name]' " +
 			"ORDER BY date ";
 
@@ -240,7 +241,7 @@ class DBHelper extends SQLiteOpenHelper {
             " SET " +
             "deposit = [DEPOSIT], " +
             "description = '[DESCR]', " +
-            "isOuter = '[IS_OUTER]' " +
+            "isOuter = '[IS_OUTER]', " +
             "AccName = '[ACC_NAME]' " +
             "WHERE accountId = '[accountId]'";
 

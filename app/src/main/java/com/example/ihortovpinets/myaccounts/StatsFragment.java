@@ -8,13 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+
+//import javafx.scene.chart.PieChart;
 
 /**
  * Created by itovp on 22.05.2017.
@@ -23,7 +20,7 @@ import java.util.ArrayList;
 public class StatsFragment extends Fragment {
 
 	public static final int STATS_FRAGMENT_ID = R.id.stats_frg_id;
-	private PieChart mMoneyPerAccChart;
+	//private PieChart mMoneyPerAccChart;
 	private ArrayList<Account> myAccounts;
 
 	@Override
@@ -35,8 +32,9 @@ public class StatsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		View view = inflater.inflate(R.layout.main_page_stats_tab, null);
+		/*View view = inflater.inflate(R.layout.main_page_stats_tab, null);
 		mMoneyPerAccChart = (PieChart) view.findViewById(R.id.stats_frg_all_accounts_pieChart);
+
 		myAccounts = new DBHelper(getActivity()).getAccListFromDB();
 		updatePieChart(mMoneyPerAccChart);
 		return view;
@@ -56,6 +54,7 @@ public class StatsFragment extends Fragment {
 		PieDataSet dataset = new PieDataSet(entries, "Accounts");
 		dataset.setColors(ColorTemplate.COLORFUL_COLORS);
 		PieData data = new PieData(labels, dataset);
-		pc.setData(data);
+		pc.setData(data);*/
+		return getView();
 	}
 }

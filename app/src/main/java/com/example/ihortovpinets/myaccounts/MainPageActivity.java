@@ -44,7 +44,7 @@ public class MainPageActivity extends AppCompatActivity {
 					frg = new AccountsFragment();
 					break;
 				case StatsFragment.STATS_FRAGMENT_ID:
-					frg = new StatsFragment();
+					frg = new StatsFragment();// todo statistic from scratch
 					break;
 			}
 			return frg;

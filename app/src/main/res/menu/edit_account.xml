@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/create_new_account"
+        android:title="fg"
+        app:showAsAction="always"/>
+
+    <!--android:icon="@drawable/create_account"-->
+    <item
+        android:id="@+id/add_new_deal"
+        android:title="gh"
+        app:showAsAction="always"/>
+    <!--android:icon="@drawable/add_deal"-->
+</menu>

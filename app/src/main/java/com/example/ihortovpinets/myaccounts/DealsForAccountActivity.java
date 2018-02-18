@@ -35,12 +35,12 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuItem mi = menu.add(0, R.id.delete_acc_btn, 0, R.string.delete_acc_label);
-		mi.setIcon(R.drawable._ic_btn_delete_normal);
+		//mi.setIcon(R.drawable._ic_btn_delete_normal);
 		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
 		mi = menu.add(0, R.id.add_new_deal, 0, getResources().getString(R.string.add_new_deal));
 		mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-		mi.setIcon(R.drawable.add_deal);
+		//mi.setIcon(R.drawable.add_deal);
 
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);

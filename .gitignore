@@ -1,7 +1,5 @@
 *.iml
 .gradle
-build.gradle
-gradle.properties
 .idea
 /local.properties
 /.idea/workspace.xml
@@ -9,9 +7,7 @@ gradle.properties
 .DS_Store
 /build
 /captures
-/gradle/wrapper
-*.bat
-*.gradle
+
 
 # Created by https://www.gitignore.io/api/java,android
 
