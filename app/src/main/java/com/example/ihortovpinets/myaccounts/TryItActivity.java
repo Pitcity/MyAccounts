@@ -30,12 +30,12 @@ public class TryItActivity extends AppCompatActivity {
 		Notification n  = new Notification.Builder(this)
 				.setContentTitle("Open Deal Details")
 				.setContentText("blablabla")
-				.setSmallIcon(R.drawable._ic_btn_delete_normal)
+				.setSmallIcon(R.drawable.common_google_signin_btn_icon_light_disabled)
 				.setContentIntent(pIntent)
 				.setAutoCancel(true)
-				.addAction(R.drawable._ic_btn_save_xml, "Call", pIntent)
-				.addAction(R.drawable._ic_btn_save_xml, "More", pIntent)
-				.addAction(R.drawable._ic_btn_save_xml, "And more", pIntent).build();
+				.addAction(R.drawable.common_google_signin_btn_icon_light_disabled,"Call", pIntent)
+				.addAction(R.drawable.common_google_signin_btn_icon_light_disabled, "More", pIntent)
+				.addAction(R.drawable.common_google_signin_btn_icon_light_disabled, "And more", pIntent).build();
 
 
 		NotificationManager notificationManager =

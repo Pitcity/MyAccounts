@@ -4,6 +4,23 @@
              android:layout_height="match_parent"
              android:orientation="vertical">
 
+    <EditText
+        android:id="@+id/adress"
+        android:layout_width="match_parent"
+        android:text="http://192.168.0.101:8080/home"
+        android:layout_height="wrap_content"></EditText>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/butn"
+        android:text="check it" />
+
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></TextView>
+
     <ListView
         android:id="@+id/list_of_accounts"
         android:layout_width="match_parent"

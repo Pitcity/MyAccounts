@@ -17,10 +17,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.HttpUrl;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okio.BufferedSink;
 
 import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.NEED_TO_UPDATE;
 
@@ -46,13 +63,13 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         getActivity().getActionBar().setHomeButtonEnabled(true);
         //getActivity().getActionBar().menu(R.menu.edit_account);
-      // getActivity().getMenuInflater().inflate();
+        // getActivity().getMenuInflater().inflate();
         //EditAccountDialog ead = new EditAccountDialog();
         //ead.setOnDismissListener(this);
         //Bundle bdl = new Bundle();
-       // bdl.putString(ACCOUNT_ID, mAdapter.getItem(position).getAccountId());
-       // ead.setArguments(bdl);
-       // ead.show(getActivity().getFragmentManager(), EDITING_ACC_DIALOG);
+        // bdl.putString(ACCOUNT_ID, mAdapter.getItem(position).getAccountId());
+        // ead.setArguments(bdl);
+        // ead.show(getActivity().getFragmentManager(), EDITING_ACC_DIALOG);
         return true;
     }
 
@@ -114,12 +131,85 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
         return super.onOptionsItemSelected(item);
     }
 
+    private void sendRequest(View view) {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                // .url("http://192.168.0.101/getAccList")
+                .url(((EditText) view.findViewById(R.id.adress)).getText() + "/getAccList").method("POST", new RequestBody() {
+                    @Override
+                    public MediaType contentType() {
+                        return MediaType.parse("application/json");
+                    }
+
+                    @Override
+                    public void writeTo(BufferedSink sink) throws IOException {
+
+                    }
+                })
+                .build();
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://api.github.help").newBuilder();
+        urlBuilder.addQueryParameter("v", "1.0");
+        urlBuilder.addQueryParameter("user", "vogella");
+        String url = urlBuilder.build().toString();
+
+        Request request2 = new Request.Builder()
+                .url(url)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                //setFailure(e);
+                e.printStackTrace();
+                System.out.println("ressult :  fail" + request.toString());
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                } else {
+                    //setSuccess(response);
+                    String str = response.body().string();
+                    ArrayList<Account> myAccounts = new ArrayList<Account>();
+                    try {
+                        JSONArray jArray = new JSONArray(str);
+                        for (int i = 0; i < jArray.length(); i++) {
+                            JSONObject obj = jArray.optJSONObject(i);
+                            Account acc = new Account(obj.getString("id"), obj.getString("name"), obj.getDouble("deposit"), obj.getString("description"), obj.getBoolean("isOuter"));
+                            myAccounts.add(acc);
+
+                            System.out.println("ressult : succ" + acc.toString());
+                        }
+                        mAdapter = new AccountsListAdapter(myAccounts);
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mListView.setAdapter(mAdapter);
+                                mListView.invalidate();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.main_page_accounts_tab, null);
+        final View view = inflater.inflate(R.layout.main_page_accounts_tab, null);
         setHasOptionsMenu(true);
+        ((Button) view.findViewById(R.id.butn)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendRequest(view);
+            }
+        });
         mListView = (ListView) view.findViewById(R.id.list_of_accounts);
         mListView.setOnItemClickListener(this);
         mAdapter = new AccountsListAdapter(new DBHelper(getActivity()).getAccListFromDB());

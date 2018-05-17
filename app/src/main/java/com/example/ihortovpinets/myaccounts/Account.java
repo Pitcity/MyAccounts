@@ -1,6 +1,9 @@
 package com.example.ihortovpinets.myaccounts;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Created by IhorTovpinets on 25.08.2016.
