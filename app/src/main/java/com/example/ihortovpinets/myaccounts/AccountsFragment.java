@@ -22,13 +22,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.HttpUrl;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import com.example.ihortovpinets.myaccounts.Entity.Account;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,6 +31,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import okio.BufferedSink;
 
 import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.NEED_TO_UPDATE;
@@ -148,28 +149,18 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
                 })
                 .build();
 
-        HttpUrl.Builder urlBuilder = HttpUrl.parse("https://api.github.help").newBuilder();
-        urlBuilder.addQueryParameter("v", "1.0");
-        urlBuilder.addQueryParameter("user", "vogella");
-        String url = urlBuilder.build().toString();
-
-        Request request2 = new Request.Builder()
-                .url(url)
-                .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-                //setFailure(e);
+            public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                System.out.println("ressult :  fail" + request.toString());
+                System.out.println("ressult :  fail" + request.toString() + "\n");
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
+            public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
                     throw new IOException("Unexpected code " + response);
                 } else {
-                    //setSuccess(response);
                     String str = response.body().string();
                     ArrayList<Account> myAccounts = new ArrayList<Account>();
                     try {

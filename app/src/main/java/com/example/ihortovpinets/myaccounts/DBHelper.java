@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.ihortovpinets.myaccounts.Entity.Account;
+import com.example.ihortovpinets.myaccounts.Entity.Deal;
+
 import java.util.ArrayList;
 
 class DBHelper extends SQLiteOpenHelper {
@@ -139,19 +142,6 @@ class DBHelper extends SQLiteOpenHelper {
 		resultSet.close();
 	}
 
-    ArrayList<DealDTO> getDealsByName(String asRole, String name) {
-        Cursor resultSet = mDatabase.rawQuery("SELECT seller, buyer, date, SUM(sum) FROM " + TABLE_DEALS_NAME + "  WHERE " + asRole + " ='" + name + "' GROUP BY date;", null);
-        ArrayList<DealDTO> myDeals = new ArrayList<>();
-        if (resultSet.moveToFirst()) {
-            do {
-                //myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
-                  //      resultSet.getString(2), Double.valueOf(resultSet.getString(3))));
-            } while (resultSet.moveToNext());
-        }
-        resultSet.close();
-        return myDeals;
-    }
-
 	ArrayList<DealDTO> getDealsByName(String name) {
 		Cursor resultSet = mDatabase.rawQuery(GET_DEAL_FOR_ACC.replace("[name]", name), null);
 		ArrayList<DealDTO> myDeals = new ArrayList<>();
@@ -165,7 +155,7 @@ class DBHelper extends SQLiteOpenHelper {
 		return myDeals;
 	}
 
-	public boolean isAccoutWithNameExists(String name) { //valid
+	public boolean isAccountWithNameExists(String name) {
 		return mDatabase.rawQuery(SELECT_ACCOUNT_WITH_NAME.replace("[name]", name), null).moveToFirst();
 	}
 
@@ -186,12 +176,12 @@ class DBHelper extends SQLiteOpenHelper {
 	private final String DROP_TMP = "" +
 			"DROP TABLE TMP";
 
-	private final String SELECT_ACCOUNT_WITH_NAME = "" +
+	private static final String SELECT_ACCOUNT_WITH_NAME = "" +
 			"SELECT 1 " +
 				"FROM " + TABLE_ACCOUNTS_NAME +
 			" WHERE AccName = '[name]'";
 
-	private final String GET_DEAL_FOR_ACC = "" +
+	private static final String GET_DEAL_FOR_ACC = "" +
 			"SELECT " +
 				"seller, " +
 				"buyer, " +
@@ -203,21 +193,21 @@ class DBHelper extends SQLiteOpenHelper {
 			"WHERE seller ='[name]' OR buyer ='[name]' " +
 			"ORDER BY date ";
 
-    private final String ADD_ACCOUNT_PATTERN = "" +
+    private static final String ADD_ACCOUNT_PATTERN = "" +
             "INSERT INTO " + TABLE_ACCOUNTS_NAME +
             " (accountId, AccName, deposit, description, isOuter) " +
             "VALUES(" +
             "'[accountId]','[NAME]',[DEPOSIT],'[DESCR]','[IS_OUTER]'" +
             ")";
 
-    private final String ADD_DEAL_PATTERN = "" +
+    private static final String ADD_DEAL_PATTERN = "" +
             "INSERT INTO " + TABLE_DEALS_NAME +
             " (seller, buyer, note, sum, date) " +
             "VALUES(" +
             "'[SELLER]','[BUYER]','[NOTE]',[SUM],'[DATE]'" + //// TODO: 13.05.2017 make date as double not string
             ")";
 
-    private final String TABLE_ACCOUNTS_CREATE = "" +
+    private static final String TABLE_ACCOUNTS_CREATE = "" +
             "CREATE TABLE IF NOT EXISTS " + TABLE_ACCOUNTS_NAME + "(" +
             "accountId VARCHAR PRIMARY KEY, " +
             "AccName VARCHAR, " +
@@ -226,7 +216,7 @@ class DBHelper extends SQLiteOpenHelper {
             "isOuter BOOLEAN" +
             ");";
 
-    private final String TABLE_DEALS_CREATE = "" +
+    private static final String TABLE_DEALS_CREATE = "" +
             "CREATE TABLE IF NOT EXISTS " + TABLE_DEALS_NAME + "(" +
             " seller VARCHAR, " +
             " buyer VARCHAR, " +
@@ -236,7 +226,7 @@ class DBHelper extends SQLiteOpenHelper {
             " id INTEGER PRIMARY KEY AUTOINCREMENT" +
             ");";
 
-    public final String UPDATE_ACCOUNT = "" +
+    public static final String UPDATE_ACCOUNT = "" +
             "UPDATE " + TABLE_ACCOUNTS_NAME +
             " SET " +
             "deposit = [DEPOSIT], " +

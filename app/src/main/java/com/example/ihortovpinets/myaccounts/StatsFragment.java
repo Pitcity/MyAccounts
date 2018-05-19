@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.example.ihortovpinets.myaccounts.Entity.Account;
+
 import java.util.ArrayList;
 
 //import javafx.scene.chart.PieChart;

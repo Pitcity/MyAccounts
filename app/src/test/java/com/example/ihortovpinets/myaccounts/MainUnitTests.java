@@ -1,5 +1,7 @@
 package com.example.ihortovpinets.myaccounts;
 
+import com.example.ihortovpinets.myaccounts.Entity.Account;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,8 +22,8 @@ public class MainUnitTests {
 
 	@Before
 	public void init() {
-		firstAccount = new Account("Account1", START_AMOUNT1, "");
-		secondAccount = new Account("Account2", START_AMOUNT2, "");
+		firstAccount = new Account("Account1", START_AMOUNT1, "", false);
+		secondAccount = new Account("Account2", START_AMOUNT2, "", false);
 	}
 
 	@Test // testing deposit changing if increasing

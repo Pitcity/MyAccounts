@@ -11,6 +11,8 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.example.ihortovpinets.myaccounts.Entity.Account;
+
 import java.util.List;
 
 /**

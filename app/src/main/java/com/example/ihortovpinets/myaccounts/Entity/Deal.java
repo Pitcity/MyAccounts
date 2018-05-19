@@ -1,12 +1,10 @@
-package com.example.ihortovpinets.myaccounts;
+package com.example.ihortovpinets.myaccounts.Entity;
 
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
-/**
- * Created by IhorTovpinets on 25.08.2016.
- */
 public class Deal implements Serializable {
 
 	private Account buyer;
@@ -14,6 +12,7 @@ public class Deal implements Serializable {
 	private double sum = 0;
 	private long date;
 	private String note;
+	private String dealId;
 
 	private Deal(Account buyer, Account seller, String note, double sum, long date) {
 		this.buyer = buyer;
@@ -21,6 +20,7 @@ public class Deal implements Serializable {
 		this.sum = sum;
 		this.note = note;
 		this.date = date;
+		this.dealId = UUID.randomUUID().toString();
 	}
 
 	public static Deal createDeal(Account buyer, Account seller, String note, double sum, long date) {

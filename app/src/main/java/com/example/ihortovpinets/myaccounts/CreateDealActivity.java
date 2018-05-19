@@ -20,6 +20,9 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ihortovpinets.myaccounts.Entity.Account;
+import com.example.ihortovpinets.myaccounts.Entity.Deal;
+
 import java.util.ArrayList;
 
 import static android.view.View.GONE;

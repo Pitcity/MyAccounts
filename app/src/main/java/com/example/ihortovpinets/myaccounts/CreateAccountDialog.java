@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ihortovpinets.myaccounts.Entity.Account;
+
 /**
  * Created by itovp on 21.06.2017.
  */
@@ -88,7 +90,7 @@ public class CreateAccountDialog extends DialogFragment {
                 case R.id.create_account_submit:
                     String accName = mName.getText().toString();
                     DBHelper dbh = new DBHelper(getActivity());
-                    if (dbh.isAccoutWithNameExists(accName)) {
+                    if (dbh.isAccountWithNameExists(accName)) {
                         Toast.makeText(getActivity(), "Account with this name already exists", Toast.LENGTH_LONG).show();
                     } else {
                         try {
