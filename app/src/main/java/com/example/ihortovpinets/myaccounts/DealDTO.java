@@ -14,9 +14,9 @@ public class DealDTO {
 	private long date;
 	private String note;
 	private double sum;
-	private int id;
+	private String id;
 
-	DealDTO(String seller, String buyer, long date, double sum, int id) {
+	DealDTO(String seller, String buyer, long date, double sum, String id) {
 		this.seller = seller;
 		this.buyer = buyer;
 		this.date = date;
@@ -24,7 +24,7 @@ public class DealDTO {
 		this.id = id;
 	}
 
-	DealDTO(String seller, String buyer, long date, double sum, String note, int id) {
+	DealDTO(String seller, String buyer, long date, double sum, String note, String id) {
 		this.seller = seller;
 		this.buyer = buyer;
 		this.date = date;
@@ -44,6 +44,10 @@ public class DealDTO {
 	public String getDate() {
 		return SimpleDateFormat.getDateInstance().format(new Date(date));
 	}
+
+	public Long getDateMilis() {
+	    return date;
+    }
 
 	public double getSum() {
 		return sum;

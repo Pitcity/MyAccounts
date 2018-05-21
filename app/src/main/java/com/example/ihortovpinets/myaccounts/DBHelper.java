@@ -24,9 +24,11 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_DEALS_COMPONENTS_NAME = "tblDealComponents";
 
 	private SQLiteDatabase mDatabase = null;
+	private Context mContext;
 
 	DBHelper(Context context) {
 		super(context, DB_NAME, null, DB_VER);
+		mContext = context;
 		mDatabase = this.getReadableDatabase();
 	}
 
@@ -72,6 +74,18 @@ class DBHelper extends SQLiteOpenHelper {
         );
     }
 
+    void updateAccountsWithServer(ArrayList<Account>accounts) {
+	    for (Account acc: accounts) {
+	        if(isAccountWithNameExists(acc.getName()) || isAccountWithIdExists(acc.getAccountId())) {
+                System.out.println("ressult : accIsExists" + acc.toString());
+            } else {
+	            addAccountToDB(acc);
+                System.out.println("ressult : accAdded" + acc.toString());
+	            new DealsService(mContext).requestDeals(acc.getAccountId());
+            }
+        }
+    }
+
 	void addDealToDB(Deal deal) {
 		mDatabase.execSQL(ADD_DEAL_PATTERN.replace("[SELLER]", deal.getSeller().getName())
 				.replace("[BUYER]", deal.getBuyer().getName())
@@ -81,13 +95,27 @@ class DBHelper extends SQLiteOpenHelper {
 		);
 	}
 
+    void addDealToDB(DealDTO deal) {
+        mDatabase.execSQL(ADD_DEAL_PATTERN.replace("[SELLER]", deal.getSeller())
+                .replace("[BUYER]", deal.getBuyer())
+                .replace("[NOTE]", deal.getNote())
+                .replace("[SUM]", Double.toString(deal.getSum()))
+                .replace("[DATE]", deal.getDateMilis().toString())
+        );
+    }
+
+
     ArrayList<Account> getAccListFromDB() {
-        Cursor resultSet = mDatabase.rawQuery("SELECT * FROM " + TABLE_ACCOUNTS_NAME, null);//// TODO: 13.05.2017 replace * with fields
+	    return getAccListFromDB(true);
+    }
+
+    ArrayList<Account> getAccListFromDB(boolean selectActive) {
+        Cursor resultSet = mDatabase.rawQuery("SELECT * FROM " + TABLE_ACCOUNTS_NAME + (selectActive ? " where syncFlag != 9 " : ""), null);//// TODO: 13.05.2017 replace * with fields
         ArrayList<Account> myAccounts = new ArrayList<>();
         if (resultSet.moveToFirst()) {
             do {
                 myAccounts.add(new Account(resultSet.getString(0), resultSet.getString(1),
-                        Double.valueOf(resultSet.getString(2)), resultSet.getString(2), Boolean.valueOf(resultSet.getString(3))));
+                        Double.valueOf(resultSet.getString(2)), resultSet.getString(3), Boolean.valueOf(resultSet.getString(4)), resultSet.getInt(5)));
             } while (resultSet.moveToNext());
         }
         resultSet.close();
@@ -101,7 +129,7 @@ class DBHelper extends SQLiteOpenHelper {
             do {
                 myDeals.add(Deal.createDeal(new Account(resultSet.getString(1), true),
                         new Account(resultSet.getString(0), true), resultSet.getString(2),
-                        Double.valueOf(resultSet.getString(3)), resultSet.getLong(4)));//// TODO: 13.05.2017 do smth with all that numbers -_-
+                        Double.valueOf(resultSet.getString(3)), resultSet.getLong(4),resultSet.getInt(5)));//// TODO: 13.05.2017 do smth with all that numbers -_-
             }
             while (resultSet.moveToNext());
         }
@@ -111,12 +139,12 @@ class DBHelper extends SQLiteOpenHelper {
 
     @Deprecated
     void deleteAccFromBD(String nameOfAcc) {
-        mDatabase.execSQL("DELETE FROM " + TABLE_ACCOUNTS_NAME + " WHERE AccName='" + nameOfAcc + "'");
+        mDatabase.execSQL("UPDATE " + TABLE_ACCOUNTS_NAME + " SET syncFlag = 9 WHERE AccName='" + nameOfAcc + "'");
         updateDeals(mDatabase);
     }
 
     void deleteAccById(String accId) {
-        mDatabase.execSQL("DELETE FROM " + TABLE_ACCOUNTS_NAME + " WHERE accountId='" + accId + "'");
+        mDatabase.execSQL("UPDATE " + TABLE_ACCOUNTS_NAME + " SET syncFlag = 9 WHERE accountId='" + accId + "'");
         updateDeals(mDatabase);
     }
 
@@ -136,7 +164,7 @@ class DBHelper extends SQLiteOpenHelper {
 		if (resultSet.moveToFirst()) {
 			do {
 				if (!(accs.contains(new Account(resultSet.getString(1), false)) || accs.contains(new Account(resultSet.getString(0), false))))
-					sqLiteDatabase.execSQL("DELETE FROM " + TABLE_DEALS_NAME + " WHERE id = " + resultSet.getString(5) + ";");
+					sqLiteDatabase.execSQL("update " + TABLE_DEALS_NAME + " set syncFlag = 9 WHERE id = " + resultSet.getString(5) + ";");
 			} while (resultSet.moveToNext());
 		}
 		resultSet.close();
@@ -148,17 +176,20 @@ class DBHelper extends SQLiteOpenHelper {
 		if (resultSet.moveToFirst()) {
 			do {
 				myDeals.add(new DealDTO(resultSet.getString(0), resultSet.getString(1),
-						resultSet.getLong(2), Double.valueOf(resultSet.getString(3)), resultSet.getString(4), resultSet.getInt(5)));
+						resultSet.getLong(2), Double.valueOf(resultSet.getString(3)), resultSet.getString(4), resultSet.getString(5)));
 			} while (resultSet.moveToNext());
 		}
 		resultSet.close();
 		return myDeals;
 	}
 
-	public boolean isAccountWithNameExists(String name) {
-		return mDatabase.rawQuery(SELECT_ACCOUNT_WITH_NAME.replace("[name]", name), null).moveToFirst();
-	}
+    public boolean isAccountWithNameExists(String name) {
+        return mDatabase.rawQuery(SELECT_ACCOUNT_WITH_NAME.replace("[name]", name), null).moveToFirst();
+    }
 
+    public boolean isAccountWithIdExists(String id) {
+        return mDatabase.rawQuery(SELECT_ACCOUNT_WITH_ID.replace("[id]", id), null).moveToFirst();
+    }
 	//@formatter:off
 
     private final String TABLE_DROP = "DROP TABLE IF EXISTS [table_name]";
@@ -181,6 +212,11 @@ class DBHelper extends SQLiteOpenHelper {
 				"FROM " + TABLE_ACCOUNTS_NAME +
 			" WHERE AccName = '[name]'";
 
+    private static final String SELECT_ACCOUNT_WITH_ID = "" +
+            "SELECT 1 " +
+                "FROM " + TABLE_ACCOUNTS_NAME +
+            " WHERE accountId = '[id]'";
+
 	private static final String GET_DEAL_FOR_ACC = "" +
 			"SELECT " +
 				"seller, " +
@@ -188,23 +224,24 @@ class DBHelper extends SQLiteOpenHelper {
 				"date, " +
 				"sum," +
 				"note," +
-				"id " +
+				"id," +
+                "syncFlag " +
 			"FROM " + TABLE_DEALS_NAME + " " +
 			"WHERE seller ='[name]' OR buyer ='[name]' " +
 			"ORDER BY date ";
 
     private static final String ADD_ACCOUNT_PATTERN = "" +
             "INSERT INTO " + TABLE_ACCOUNTS_NAME +
-            " (accountId, AccName, deposit, description, isOuter) " +
+            " (accountId, AccName, deposit, description, isOuter, syncFlag) " +
             "VALUES(" +
-            "'[accountId]','[NAME]',[DEPOSIT],'[DESCR]','[IS_OUTER]'" +
+            "'[accountId]','[NAME]',[DEPOSIT],'[DESCR]','[IS_OUTER]', 2" +
             ")";
 
     private static final String ADD_DEAL_PATTERN = "" +
             "INSERT INTO " + TABLE_DEALS_NAME +
-            " (seller, buyer, note, sum, date) " +
+            " (seller, buyer, note, sum, date, syncFlag) " +
             "VALUES(" +
-            "'[SELLER]','[BUYER]','[NOTE]',[SUM],'[DATE]'" + //// TODO: 13.05.2017 make date as double not string
+            "'[SELLER]','[BUYER]','[NOTE]',[SUM],'[DATE]', 2" + //// TODO: 13.05.2017 make date as double not string
             ")";
 
     private static final String TABLE_ACCOUNTS_CREATE = "" +
@@ -213,7 +250,8 @@ class DBHelper extends SQLiteOpenHelper {
             "AccName VARCHAR, " +
             "deposit DOUBLE, " +
             "description VARCHAR," +
-            "isOuter BOOLEAN" +
+            "isOuter BOOLEAN, " +
+            "syncFlag INTEGER" +
             ");";
 
     private static final String TABLE_DEALS_CREATE = "" +
@@ -222,8 +260,9 @@ class DBHelper extends SQLiteOpenHelper {
             " buyer VARCHAR, " +
             " note VARCHAR, " +
             " sum DOUBLE, " +
-            " date VARCHAR," +
-            " id INTEGER PRIMARY KEY AUTOINCREMENT" +
+            " date LONG," +
+            "id VARCHAR PRIMARY KEY, " +
+            "syncFlag INTEGER " +
             ");";
 
     public static final String UPDATE_ACCOUNT = "" +
@@ -233,6 +272,7 @@ class DBHelper extends SQLiteOpenHelper {
             "description = '[DESCR]', " +
             "isOuter = '[IS_OUTER]', " +
             "AccName = '[ACC_NAME]' " +
+            "syncFlag = 1 " +
             "WHERE accountId = '[accountId]'";
 
     private static final String TABLE_COMPONENT_TYPES_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLE_COMP_TYPES_NAME + " ( TypeId VARCHAR PRIMARY KEY, CategoryId VARCHAR, TypeTitle VARCHAR)";

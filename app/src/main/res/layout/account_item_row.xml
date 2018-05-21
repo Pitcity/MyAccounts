@@ -1,47 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/account_item_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding"
-        android:layout_marginBottom="@dimen/padding"
-        android:layout_marginLeft="@dimen/base_padding"
-        android:layout_marginRight="@dimen/base_padding"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30sp"/>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="?android:attr/selectableItemBackground"
+    android:layout_margin="@dimen/account_item_margin"
+    card_view:cardCornerRadius="10dp"
+    card_view:cardBackgroundColor="#00FFFFFF">
 
-    <TextView
-        android:id="@+id/account_item_money"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/account_item_name"
-        android:layout_marginEnd="@dimen/base_padding"
-        android:layout_marginRight="@dimen/base_padding"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <TextView
-        android:id="@+id/account_item_desc"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/account_item_name"
-        android:layout_alignStart="@+id/account_item_name"
-        android:layout_below="@+id/account_item_name"
-        android:layout_marginRight="@dimen/base_padding"
-        android:paddingLeft="@dimen/padding"
-        android:paddingBottom="@dimen/padding"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
+        android:layout_margin="@dimen/account_item_margin">
 
-    <View
-        android:background="@android:color/darker_gray"
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:layout_alignParentBottom="true"/>
+        <TextView
+            android:id="@+id/account_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding"
+            android:layout_marginLeft="@dimen/base_padding"
+            android:layout_marginStart="@dimen/base_padding"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/account_item_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/min_padding"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/base_padding"
+            android:layout_marginRight="@dimen/base_padding"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/account_item_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/account_item_name"
+            android:layout_marginBottom="@dimen/padding"
+            android:layout_marginLeft="@dimen/base_padding"
+            android:layout_marginStart="@dimen/base_padding"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="italic" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

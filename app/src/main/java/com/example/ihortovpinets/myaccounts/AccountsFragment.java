@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,11 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.ihortovpinets.myaccounts.Entity.Account;
 
@@ -46,32 +45,37 @@ import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.NEED_
  * Created by itovp on 22.05.2017.
  */
 
-public class AccountsFragment extends Fragment implements AdapterView.OnItemClickListener, DialogInterface.OnDismissListener, AdapterView.OnItemLongClickListener {
+public class AccountsFragment extends Fragment implements DialogInterface.OnDismissListener, AdapterView.OnItemLongClickListener, AccountListAdapter.OnItemClickListener, AccountListAdapter.OnItemLongClickListener {
 
     public static final int ACCOUNTS_FRAGMENT_ID = R.id.accounts_frg_id;
     private static final java.lang.String CREATE_ACC_DIALOG = "CREATE_ACC_DIALOG";
     private static final java.lang.String EDITING_ACC_DIALOG = "EDITING_ACC_DIALOG";
     private static final java.lang.String ACCOUNT_ID = "ACCOUNT_ID";
-    private ListView mListView;
-    private AccountsListAdapter mAdapter;
+    private RecyclerView mAccountsList;
+    private AccountListAdapter mAdapter;
+    RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        mAdapter.notifyDataSetChanged();
+        mAdapter.update();
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         getActivity().getActionBar().setHomeButtonEnabled(true);
-        //getActivity().getActionBar().menu(R.menu.edit_account);
-        // getActivity().getMenuInflater().inflate();
-        //EditAccountDialog ead = new EditAccountDialog();
-        //ead.setOnDismissListener(this);
-        //Bundle bdl = new Bundle();
-        // bdl.putString(ACCOUNT_ID, mAdapter.getItem(position).getAccountId());
-        // ead.setArguments(bdl);
-        // ead.show(getActivity().getFragmentManager(), EDITING_ACC_DIALOG);
         return true;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Intent intent = new Intent(getContext(), DealsForAccountActivity.class);
+        intent.putExtra(ACCOUNT_ID, mAdapter.getItem(position).getName());
+        startActivityForResult(intent, DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE);
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        //removeAccount
     }
 
     public class UpdateReceiver extends BroadcastReceiver {
@@ -134,9 +138,9 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 
     private void sendRequest(View view) {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                // .url("http://192.168.0.101/getAccList")
-                .url(((EditText) view.findViewById(R.id.adress)).getText() + "/getAccList").method("POST", new RequestBody() {
+        DealsService.address = ((EditText) view.findViewById(R.id.adress)).getText().toString();
+        final Request request = new Request.Builder()
+                .url(DealsService.address + "/getAccList").method("POST", new RequestBody() {
                     @Override
                     public MediaType contentType() {
                         return MediaType.parse("application/json");
@@ -162,7 +166,7 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
                     throw new IOException("Unexpected code " + response);
                 } else {
                     String str = response.body().string();
-                    ArrayList<Account> myAccounts = new ArrayList<Account>();
+                    final ArrayList<Account> myAccounts = new ArrayList<Account>();
                     try {
                         JSONArray jArray = new JSONArray(str);
                         for (int i = 0; i < jArray.length(); i++) {
@@ -172,13 +176,12 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
 
                             System.out.println("ressult : succ" + acc.toString());
                         }
-                        mAdapter = new AccountsListAdapter(myAccounts);
 
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                mListView.setAdapter(mAdapter);
-                                mListView.invalidate();
+                                new DBHelper(getActivity()).updateAccountsWithServer(myAccounts);
+                                mAdapter.setAccounts(myAccounts);
                             }
                         });
                     } catch (JSONException e) {
@@ -201,80 +204,14 @@ public class AccountsFragment extends Fragment implements AdapterView.OnItemClic
                 sendRequest(view);
             }
         });
-        mListView = (ListView) view.findViewById(R.id.list_of_accounts);
-        mListView.setOnItemClickListener(this);
-        mAdapter = new AccountsListAdapter(new DBHelper(getActivity()).getAccListFromDB());
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemLongClickListener(this);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mAccountsList = (RecyclerView) view.findViewById(R.id.list_of_accounts);
+        mAdapter = new AccountListAdapter(getContext());
+        mAdapter.setOnItemClickListener(this);
+        mAdapter.setOnItemLongClickListener(this);
+        mAccountsList.setLayoutManager(mLayoutManager);
+        mAccountsList.setAdapter(mAdapter);
         return view;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Intent intent = new Intent(getContext(), DealsForAccountActivity.class);
-        intent.putExtra(ACCOUNT_ID, mAdapter.getItem(position).getName());
-        startActivityForResult(intent, DealsForAccountActivity.DEALS_FORR_ACC_ACTIVITY_CODE);
-    }
-
-    private class AccountsListAdapter extends ArrayAdapter<Account> {
-
-        private ArrayList<Account> myAccounts;
-
-        AccountsListAdapter(ArrayList<Account> myAccounts) {
-            super(getActivity(), R.layout.account_item_row, myAccounts);
-            this.myAccounts = myAccounts;
-        }
-
-        @Override
-        public int getCount() {
-            return myAccounts.size();
-        }
-
-        @Nullable
-        @Override
-        public Account getItem(int position) {
-            return myAccounts.get(position);
-        }
-
-        @Override
-        public View getView(int position, View view, ViewGroup parent) {
-            ViewHolder vh;
-            if (view == null) {
-                view = LayoutInflater.from(getContext()).inflate(R.layout.account_item_row, null);
-                vh = new ViewHolder(view);
-                view.setTag(vh);
-            } else {
-                vh = (ViewHolder) view.getTag();
-            }
-
-            Account currentAccount = myAccounts.get(position);
-
-            vh.mName.setText(currentAccount.getName());
-            vh.mMoney.setText(Double.toString(currentAccount.getDeposit()));
-            vh.mDescription.setText(currentAccount.getDescription());
-            view.setTag(R.id.account_name_key, currentAccount.getName());
-
-            return view;
-        }
-
-        @Override
-        public void notifyDataSetChanged() {
-            myAccounts = new DBHelper(getActivity()).getAccListFromDB();
-            super.notifyDataSetChanged();
-        }
-    }
-
-    private class ViewHolder {
-
-        TextView mName;
-        TextView mMoney;
-        TextView mDescription;
-
-        ViewHolder(View view) {
-            mName = (TextView) view.findViewById(R.id.account_item_name);
-            mMoney = (TextView) view.findViewById(R.id.account_item_money);
-            mDescription = (TextView) view.findViewById(R.id.account_item_desc);
-        }
     }
 
 }
