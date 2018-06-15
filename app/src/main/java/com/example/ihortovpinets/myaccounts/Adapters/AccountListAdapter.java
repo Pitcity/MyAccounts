@@ -1,4 +1,4 @@
-package com.example.ihortovpinets.myaccounts;
+package com.example.ihortovpinets.myaccounts.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ihortovpinets.myaccounts.DBHelper;
 import com.example.ihortovpinets.myaccounts.Entity.Account;
+import com.example.ihortovpinets.myaccounts.R;
 
 import java.util.ArrayList;
 
@@ -21,13 +23,13 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     private OnItemClickListener mItemClickListener;
     private OnItemLongClickListener mItemLongClickListener;
 
-    AccountListAdapter(Context context) {
+    public AccountListAdapter(Context context) {
         super();
         mContext = context;
         updateData();
     }
 
-    AccountListAdapter(Context context, ArrayList<Account> accs) {
+    public AccountListAdapter(Context context, ArrayList<Account> accs) {
         super();
         mContext = context;
         myAccounts = accs;
@@ -123,11 +125,11 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         }
     }
 
-    interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
-    interface OnItemLongClickListener {
+    public interface OnItemLongClickListener {
         void onItemLongClick(int position);
     }
 }

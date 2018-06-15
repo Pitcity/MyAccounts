@@ -13,7 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ihortovpinets.myaccounts.DTO.AccountDto;
 import com.example.ihortovpinets.myaccounts.Entity.Account;
+import com.example.ihortovpinets.myaccounts.Service.SyncService;
 
 /**
  * Created by itovp on 21.06.2017.
@@ -94,7 +96,9 @@ public class CreateAccountDialog extends DialogFragment {
                         Toast.makeText(getActivity(), "Account with this name already exists", Toast.LENGTH_LONG).show();
                     } else {
                         try {
-                            dbh.addAccountToDB(new Account(accName, Double.valueOf(mDeposit.getText().toString()), mDescription.getText().toString(), false));
+                            Account acc = new Account(accName, Double.valueOf(mDeposit.getText().toString()), mDescription.getText().toString(), false);
+                            dbh.addAccountToDB(acc);
+                            new SyncService(getContext()).saveAccount(new AccountDto(acc));
                         } catch (Exception e) {
                             Toast.makeText(getActivity(), "Something went wrong, please, try again later", Toast.LENGTH_SHORT).show();
                         }

@@ -20,8 +20,10 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ihortovpinets.myaccounts.DTO.DealDTO;
 import com.example.ihortovpinets.myaccounts.Entity.Account;
 import com.example.ihortovpinets.myaccounts.Entity.Deal;
+import com.example.ihortovpinets.myaccounts.Service.SyncService;
 
 import java.util.ArrayList;
 
@@ -139,7 +141,7 @@ public class CreateDealActivity extends AppCompatActivity {
 			double sum = Double.valueOf(mDealSum.getText().toString());
 			String note = mDealDescr.getText().toString();
 
-			Deal newDeal = Deal.createDeal(buyer, seller, note, sum, new java.util.Date().getTime()); //// TODO: 30.05.2017 rewrite method
+			Deal newDeal = Deal.createDeal(buyer, seller, note, sum, new java.util.Date().getTime(), 2); //// TODO: 30.05.2017 rewrite method
 			if (newDeal == null) {
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.impossible_transaction_not_enough_money), Toast.LENGTH_LONG).show();
 				return false;
@@ -148,6 +150,7 @@ public class CreateDealActivity extends AppCompatActivity {
 				db.updateAcc(newDeal.getBuyer());
 				db.updateAcc(newDeal.getSeller());
 				db.addDealToDB(newDeal);
+				new SyncService(getApplicationContext()).saveDeal(new DealDTO(newDeal));
 			}
 			return true;
 		}

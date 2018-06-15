@@ -16,6 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.ihortovpinets.myaccounts.DTO.DealDTO;
+import com.example.ihortovpinets.myaccounts.Service.SyncService;
+
 import java.util.ArrayList;
 
 /**
@@ -67,6 +70,7 @@ public class DealsForAccountActivity extends AppCompatActivity { // TODO: 21.06.
 				DBHelper dbh = new DBHelper(getApplicationContext());
 				dbh.deleteAccFromBD(name);
 				setResult(DEALS_FORR_ACC_ACTIVITY_CODE, new Intent().putExtra(NEED_TO_UPDATE, true));
+				new SyncService(getApplicationContext()).deleteAcc(dbh.getAccIdByName(name).getAccountId());
 				finish();
 				break;
 			case R.id.add_new_deal:

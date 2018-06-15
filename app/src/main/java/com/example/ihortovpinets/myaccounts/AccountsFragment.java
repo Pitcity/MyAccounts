@@ -18,26 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 
-import com.example.ihortovpinets.myaccounts.Entity.Account;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okio.BufferedSink;
+import com.example.ihortovpinets.myaccounts.Adapters.AccountListAdapter;
+import com.example.ihortovpinets.myaccounts.Service.SyncService;
 
 import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.NEED_TO_UPDATE;
 
@@ -45,7 +28,7 @@ import static com.example.ihortovpinets.myaccounts.DealsForAccountActivity.NEED_
  * Created by itovp on 22.05.2017.
  */
 
-public class AccountsFragment extends Fragment implements DialogInterface.OnDismissListener, AdapterView.OnItemLongClickListener, AccountListAdapter.OnItemClickListener, AccountListAdapter.OnItemLongClickListener {
+public class AccountsFragment extends Fragment implements DialogInterface.OnDismissListener, AdapterView.OnItemLongClickListener, AccountListAdapter.OnItemClickListener, AccountListAdapter.OnItemLongClickListener, SyncService.RequestListener {
 
     public static final int ACCOUNTS_FRAGMENT_ID = R.id.accounts_frg_id;
     private static final java.lang.String CREATE_ACC_DIALOG = "CREATE_ACC_DIALOG";
@@ -78,6 +61,16 @@ public class AccountsFragment extends Fragment implements DialogInterface.OnDism
         //removeAccount
     }
 
+    @Override
+    public void onResponse() {
+        getActivity().runOnUiThread(()-> mAdapter.update());
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+
     public class UpdateReceiver extends BroadcastReceiver {
 
         @Override
@@ -91,7 +84,7 @@ public class AccountsFragment extends Fragment implements DialogInterface.OnDism
     @Override
     public void onResume() {
         if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
+            mAdapter.update();
         }
         super.onResume();
     }
@@ -136,74 +129,16 @@ public class AccountsFragment extends Fragment implements DialogInterface.OnDism
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendRequest(View view) {
-        OkHttpClient client = new OkHttpClient();
-        DealsService.address = ((EditText) view.findViewById(R.id.adress)).getText().toString();
-        final Request request = new Request.Builder()
-                .url(DealsService.address + "/getAccList").method("POST", new RequestBody() {
-                    @Override
-                    public MediaType contentType() {
-                        return MediaType.parse("application/json");
-                    }
-
-                    @Override
-                    public void writeTo(BufferedSink sink) throws IOException {
-
-                    }
-                })
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                System.out.println("ressult :  fail" + request.toString() + "\n");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
-                } else {
-                    String str = response.body().string();
-                    final ArrayList<Account> myAccounts = new ArrayList<Account>();
-                    try {
-                        JSONArray jArray = new JSONArray(str);
-                        for (int i = 0; i < jArray.length(); i++) {
-                            JSONObject obj = jArray.optJSONObject(i);
-                            Account acc = new Account(obj.getString("id"), obj.getString("name"), obj.getDouble("deposit"), obj.getString("description"), obj.getBoolean("isOuter"));
-                            myAccounts.add(acc);
-
-                            System.out.println("ressult : succ" + acc.toString());
-                        }
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                new DBHelper(getActivity()).updateAccountsWithServer(myAccounts);
-                                mAdapter.setAccounts(myAccounts);
-                            }
-                        });
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         final View view = inflater.inflate(R.layout.main_page_accounts_tab, null);
         setHasOptionsMenu(true);
-        ((Button) view.findViewById(R.id.butn)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendRequest(view);
-            }
-        });
+        (view.findViewById(R.id.butn)).setOnClickListener(v -> {
+			new DBHelper(getContext()).clearDb();
+			new SyncService(getActivity()).requestAccounts(view, this);
+		});
         mLayoutManager = new LinearLayoutManager(getContext());
         mAccountsList = (RecyclerView) view.findViewById(R.id.list_of_accounts);
         mAdapter = new AccountListAdapter(getContext());
