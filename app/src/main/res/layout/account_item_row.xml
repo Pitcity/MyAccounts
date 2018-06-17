@@ -9,7 +9,7 @@
     android:background="?android:attr/selectableItemBackground"
     android:layout_margin="@dimen/account_item_margin"
     card_view:cardCornerRadius="10dp"
-    card_view:cardBackgroundColor="#00FFFFFF">
+    card_view:cardBackgroundColor="#FFFFFFFF">
 
     <RelativeLayout
         android:layout_width="match_parent"
